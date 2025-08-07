@@ -1,6 +1,7 @@
 const express = require('express');
 const { getHome, getAbout } = require('../controllers/homeController');
 const userRoutes = require('./userRoutes');
+const blogRoutes = require('./blogRoutes');
 
 const router = express.Router();
 
@@ -10,6 +11,7 @@ router.get('/about', getAbout);
 
 // API routes
 router.use('/api/users', userRoutes);
+router.use('/api/blogs', blogRoutes);
 
 // Health check route
 router.get('/health', (req, res) => {

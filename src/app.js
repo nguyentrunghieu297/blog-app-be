@@ -1,10 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
-
 const connectDB = require('./config/database');
 const routes = require('./routes');
 const { requestLogger, notFound, errorHandler } = require('./middleware/errorHandler');
+
+// Tải biến môi trường
+require('dotenv').config();
 
 // Kết nối MongoDB
 connectDB();
