@@ -13,7 +13,10 @@ const sampleBlogs = [
         </div>`,
     featuredImage:
       'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=800&h=400&fit=crop',
-    category: 'Lịch sử',
+    category: {
+      name: 'Lịch sử',
+      slug: 'lich-su',
+    },
     tags: ['Lịch sử Việt Nam', 'Hà Nội', 'Thăng Long', 'Văn hóa', 'Di sản'],
     author: {
       name: 'Tiến sĩ Nguyễn Văn Sử',
@@ -38,7 +41,10 @@ const sampleBlogs = [
         </div>`,
     featuredImage:
       'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=400&fit=crop',
-    category: 'Lập trình',
+    category: {
+      name: 'Lập trình',
+      slug: 'lap-trinh',
+    },
     tags: ['Node.js', 'Express.js', 'MongoDB', 'API', 'JavaScript'],
     author: {
       name: 'Nguyễn Văn Dev',
@@ -62,7 +68,10 @@ const sampleBlogs = [
             <p>Vercel là platform được tạo ra bởi team phát triển Next.js, do đó có sự tối ưu hoá tuyệt vời...</p>
         </div>`,
     featuredImage: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=400&fit=crop',
-    category: 'DevOps',
+    category: {
+      name: 'DevOps',
+      slug: 'devops',
+    },
     tags: ['Next.js', 'Vercel', 'Deployment', 'React'],
     author: {
       name: 'Hoàng Văn DevOps',
@@ -86,7 +95,10 @@ const sampleBlogs = [
             <p>Machine Learning là một nhánh của Trí tuệ nhân tạo (AI) cho phép máy tính học hỏi và cải thiện...</p>
         </div>`,
     featuredImage: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=400&fit=crop',
-    category: 'AI/ML',
+    category: {
+      name: 'Khoa học dữ liệu',
+      slug: 'khoa-hoc-du-lieu',
+    },
     tags: ['Machine Learning', 'Python', 'AI', 'Data Science', 'scikit-learn'],
     author: {
       name: 'Dr. Trần Thị AI',
@@ -110,8 +122,11 @@ const sampleBlogs = [
             <p>Docker là một platform cho phép developers package ứng dụng và dependencies vào một container...</p>
         </div>`,
     featuredImage:
-      'https://images.unsplash.com/photo-1605745341112-85968b19335a?w=800&h=400&fit=crop',
-    category: 'DevOps',
+      'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=400&fit=crop',
+    category: {
+      name: 'DevOps',
+      slug: 'devops',
+    },
     tags: ['Docker', 'Container', 'DevOps', 'Deployment'],
     author: {
       name: 'Lê Văn Container',

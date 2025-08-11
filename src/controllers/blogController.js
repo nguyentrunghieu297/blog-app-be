@@ -1,4 +1,6 @@
+const { monthNames } = require('../constants');
 const Blog = require('../models/Blog');
+const { createSlug } = require('../utils');
 
 // GET /api/blogs - Lấy danh sách blogs (list view)
 const getAllBlogs = async (req, res) => {
@@ -77,6 +79,28 @@ const getAllBlogs = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Lỗi khi lấy danh sách blogs',
+      error: error.message,
+    });
+  }
+};
+
+// GET /api/blogs/published/ - Lấy blog đã published
+const getPublishedBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find({ isPublished: true })
+      .sort({ publishedAt: -1 })
+      .select('-content'); // Exclude content for list view
+
+    const blogList = blogs.map((blog) => blog.getListView());
+
+    res.json({
+      success: true,
+      data: blogList,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi lấy danh sách blog đã published',
       error: error.message,
     });
   }
@@ -405,11 +429,45 @@ const toggleLike = async (req, res) => {
 // GET /api/blogs/categories - Lấy danh sách categories
 const getCategories = async (req, res) => {
   try {
-    const categories = await Blog.distinct('category', { isPublished: true });
+    // Đếm tổng số bài viết đã published
+    const totalCount = await Blog.countDocuments({ isPublished: true });
+
+    // Sử dụng aggregation pipeline để group và đếm theo category
+    const categoriesData = await Blog.aggregate([
+      // Chỉ lấy những blog đã published
+      { $match: { isPublished: true } },
+
+      // Group theo category và đếm số lượng
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 },
+        },
+      },
+
+      // Sắp xếp theo tên category
+      { $sort: { _id: 1 } },
+    ]);
+
+    // Chuyển đổi dữ liệu sang format mong muốn
+    const categories = categoriesData.map((item) => ({
+      ...item._id,
+      count: item.count,
+    }));
+
+    // Thêm option "Tất cả" vào đầu danh sách
+    const allCategories = [
+      {
+        name: 'Tất cả',
+        slug: 'all',
+        count: totalCount,
+      },
+      ...categories,
+    ];
 
     res.json({
       success: true,
-      data: categories.sort(),
+      data: allCategories,
     });
   } catch (error) {
     res.status(500).json({
@@ -423,11 +481,38 @@ const getCategories = async (req, res) => {
 // GET /api/blogs/tags - Lấy danh sách tags
 const getTags = async (req, res) => {
   try {
-    const tags = await Blog.distinct('tags', { isPublished: true });
+    // Sử dụng aggregation pipeline để xử lý tags và đếm
+    const tagsData = await Blog.aggregate([
+      // Chỉ lấy những blog đã published
+      { $match: { isPublished: true } },
+
+      // Unwind tags array để tách từng tag thành document riêng
+      { $unwind: '$tags' },
+
+      // Group theo tag và đếm số lượng
+      {
+        $group: {
+          _id: '$tags',
+          count: { $sum: 1 },
+        },
+      },
+
+      // Sắp xếp theo tên tag
+      { $sort: { _id: 1 } },
+
+      // Chuyển đổi format dữ liệu
+      {
+        $project: {
+          _id: 0,
+          name: '$_id',
+          count: 1,
+        },
+      },
+    ]);
 
     res.json({
       success: true,
-      data: tags.sort(),
+      data: tagsData,
     });
   } catch (error) {
     res.status(500).json({
@@ -438,8 +523,75 @@ const getTags = async (req, res) => {
   }
 };
 
+// GET /api/blogs/archives - Lấy danh sách archive theo tháng
+const getArchives = async (req, res) => {
+  try {
+    const totalCount = await Blog.countDocuments({ isPublished: true });
+    // Sử dụng aggregation pipeline để group theo tháng/năm
+    const archivesData = await Blog.aggregate([
+      // Chỉ lấy những blog đã published
+      { $match: { isPublished: true } },
+
+      // Thêm fields tháng và năm từ createdAt hoặc publishedAt
+      {
+        $addFields: {
+          year: { $year: '$publishedAt' }, // Hoặc "$publishedAt" nếu có field này
+          month: { $month: '$publishedAt' },
+        },
+      },
+
+      // Group theo năm và tháng
+      {
+        $group: {
+          _id: {
+            year: '$year',
+            month: '$month',
+          },
+          count: { $sum: 1 },
+        },
+      },
+
+      // Sắp xếp theo năm và tháng giảm dần (mới nhất trước)
+      { $sort: { '_id.year': -1, '_id.month': -1 } },
+    ]);
+
+    // Chuyển đổi dữ liệu sang format mong muốn
+    const archives = archivesData.map((item) => {
+      const monthName = monthNames[item._id.month - 1]; // Month bắt đầu từ 1
+      const year = item._id.year;
+
+      return {
+        month: `${monthName}, ${year}`,
+        count: item.count,
+        slug: `${year}-${String(item._id.month).padStart(2, '0')}`,
+      };
+    });
+
+    // Thêm option "Tất cả" vào đầu danh sách
+    const allArchives = [
+      {
+        month: 'Tất cả',
+        slug: 'all',
+        count: totalCount,
+      },
+      ...archives,
+    ];
+    res.json({
+      success: true,
+      data: allArchives,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi lấy danh sách archives',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllBlogs,
+  getPublishedBlogs,
   getBlogById,
   getBlogBySlug,
   createBlog,
@@ -448,4 +600,5 @@ module.exports = {
   toggleLike,
   getCategories,
   getTags,
+  getArchives,
 };

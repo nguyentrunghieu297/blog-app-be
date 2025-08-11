@@ -9,6 +9,8 @@ const {
   toggleLike,
   getCategories,
   getTags,
+  getPublishedBlogs,
+  getArchives,
 } = require('../controllers/blogController');
 const {
   validateBlogData,
@@ -24,11 +26,17 @@ router.get('/categories', getCategories);
 // GET /api/blogs/tags - Lấy danh sách tags
 router.get('/tags', getTags);
 
+// GET /api/blogs/archives - Lấy danh sách archives
+router.get('/archives', getArchives);
+
 // GET /api/blogs - Lấy danh sách blogs với pagination, search, filter
 router.get('/', getAllBlogs);
 
+// GET /api/blogs/published - Lấy danh sách blogs đã xuất bản
+router.get('/published', getPublishedBlogs);
+
 // GET /api/blogs/slug/:slug - Lấy blog theo slug
-router.get('/slug/:slug', getBlogBySlug);
+router.get('/:slug', getBlogBySlug);
 
 // GET /api/blogs/:id - Lấy blog theo ID
 router.get('/:id', getBlogById);

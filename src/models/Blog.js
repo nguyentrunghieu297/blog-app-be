@@ -19,6 +19,25 @@ const authorSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const categorySchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Tên danh mục là bắt buộc'],
+      trim: true,
+    },
+    slug: {
+      type: String,
+      required: [true, 'Slug là bắt buộc'],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [/^[a-z0-9-]+$/, 'Slug chỉ được chúa chữ thường, số và dấu gạch ngang'],
+    },
+  },
+  { _id: false }
+);
+
 const blogSchema = new mongoose.Schema(
   {
     title: {
@@ -49,9 +68,8 @@ const blogSchema = new mongoose.Schema(
       default: 'https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800&h=400&fit=crop',
     },
     category: {
-      type: String,
+      type: categorySchema,
       required: [true, 'Danh mục là bắt buộc'],
-      trim: true,
     },
     tags: [
       {
