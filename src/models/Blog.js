@@ -29,7 +29,6 @@ const categorySchema = new mongoose.Schema(
     slug: {
       type: String,
       required: [true, 'Slug là bắt buộc'],
-      unique: true,
       lowercase: true,
       trim: true,
       match: [/^[a-z0-9-]+$/, 'Slug chỉ được chúa chữ thường, số và dấu gạch ngang'],
