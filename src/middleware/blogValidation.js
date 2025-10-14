@@ -16,7 +16,7 @@ const validateBlogData = (req, res, next) => {
     errors.push('Nội dung là bắt buộc');
   }
 
-  if (!category || category.trim().length === 0) {
+  if (!category || category.name.trim().length === 0) {
     errors.push('Danh mục là bắt buộc');
   }
 
