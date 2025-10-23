@@ -177,6 +177,27 @@ blogSchema.methods.getListView = function () {
   };
 };
 
+blogSchema.methods.getAllListView = function () {
+  return {
+    id: this._id,
+    title: this.title,
+    slug: this.slug,
+    excerpt: this.excerpt,
+    featuredImage: this.featuredImage,
+    publishedAt: this.publishedAt,
+    readTime: this.readTime,
+    category: this.category,
+    tags: this.tags,
+    author: {
+      name: this.author.name,
+      avatar: this.author.avatar,
+    },
+    isPublished: this.isPublished,
+    views: this.views,
+    likes: this.likes,
+  };
+};
+
 blogSchema.methods.getDetailView = function () {
   return {
     id: this._id,

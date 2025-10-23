@@ -53,7 +53,7 @@ const getAllBlogs = async (req, res) => {
     ]);
 
     // Transform to list view
-    const blogList = blogs.map((blog) => blog.getListView());
+    const blogList = blogs.map((blog) => blog.getAllListView());
 
     res.json({
       success: true,
