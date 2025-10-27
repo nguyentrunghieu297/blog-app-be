@@ -24,7 +24,16 @@ const getAllBlogs = async (req, res) => {
     }
 
     if (category) {
-      filter.category = new RegExp(category, 'i');
+      // Nếu category có dấu hoặc chứa khoảng trắng => có thể là tên
+      const isSlug = /^[a-z0-9-]+$/.test(category);
+
+      if (isSlug) {
+        // Lọc theo slug
+        filter['category.slug'] = category.toLowerCase();
+      } else {
+        // Lọc theo tên (không phân biệt hoa thường)
+        filter['category.name'] = new RegExp(category, 'i');
+      }
     }
 
     if (tag) {
