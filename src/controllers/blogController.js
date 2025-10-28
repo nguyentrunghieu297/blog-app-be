@@ -391,7 +391,7 @@ const deleteBlog = async (req, res) => {
   }
 };
 
-// PUT /api/blogs/:id/hide - Ẩn/Hiện blog (isPublished toggle)
+// PUT /api/blogs/:id/toggle-publish - Ẩn/Hiện blog (isPublished toggle)
 const togglePublishBlog = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);

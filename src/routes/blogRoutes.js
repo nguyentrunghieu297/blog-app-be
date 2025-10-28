@@ -54,7 +54,7 @@ router.delete('/:id', deleteBlog);
 // POST /api/blogs/:id/like - Like/Unlike blog
 router.post('/:id/like', toggleLike);
 
-// PUT /api/blogs/:id/hide - Ẩn/Hiện blog (isPublished toggle)
-router.put('/:id/hide', togglePublishBlog);
+// PUT /api/blogs/:id/toggle-publish - Ẩn/Hiện blog (isPublished toggle)
+router.put('/:id/toggle-publish', togglePublishBlog);
 
 module.exports = router;
