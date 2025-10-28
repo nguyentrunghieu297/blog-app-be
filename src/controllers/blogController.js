@@ -391,6 +391,41 @@ const deleteBlog = async (req, res) => {
   }
 };
 
+// PUT /api/blogs/:id/hide - Ẩn/Hiện blog (isPublished toggle)
+const togglePublishBlog = async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy blog',
+      });
+    }
+
+    blog.isPublished = !blog.isPublished;
+    const updatedBlog = await blog.save();
+
+    res.json({
+      success: true,
+      message: blog.isPublished ? 'Đã hiển thị blog' : 'Đã ẩn blog',
+      data: updatedBlog.getDetailView(),
+    });
+  } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        success: false,
+        message: 'ID không hợp lệ',
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi cập nhật trạng thái hiển thị blog',
+      error: error.message,
+    });
+  }
+};
+
 // POST /api/blogs/:id/like - Like/Unlike blog
 const toggleLike = async (req, res) => {
   try {
@@ -610,4 +645,5 @@ module.exports = {
   getCategories,
   getTags,
   getArchives,
+  togglePublishBlog,
 };

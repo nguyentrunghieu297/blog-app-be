@@ -11,6 +11,7 @@ const {
   getTags,
   getPublishedBlogs,
   getArchives,
+  togglePublishBlog,
 } = require('../controllers/blogController');
 const {
   validateBlogData,
@@ -52,5 +53,8 @@ router.delete('/:id', deleteBlog);
 
 // POST /api/blogs/:id/like - Like/Unlike blog
 router.post('/:id/like', toggleLike);
+
+// PUT /api/blogs/:id/hide - Ẩn/Hiện blog (isPublished toggle)
+router.put('/:id/hide', togglePublishBlog);
 
 module.exports = router;
