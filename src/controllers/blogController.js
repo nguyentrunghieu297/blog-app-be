@@ -20,7 +20,8 @@ const getAllBlogs = async (req, res) => {
     const filter = {};
 
     if (search) {
-      filter.$text = { $search: search };
+      // filter.$text = { $search: search };
+      filter.title = { $regex: search, $options: 'i' }; // không phân biệt hoa thường
     }
 
     if (category) {
