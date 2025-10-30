@@ -113,7 +113,7 @@ blogSchema.index({ category: 1 });
 blogSchema.index({ tags: 1 });
 blogSchema.index({ publishedAt: -1 });
 blogSchema.index({ isPublished: 1, publishedAt: -1 });
-blogSchema.index({ title: 'text', excerpt: 'text', content: 'text' });
+blogSchema.index({ title: 'text', excerpt: 'text' });
 
 // Virtual để lấy URL
 blogSchema.virtual('url').get(function () {
