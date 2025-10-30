@@ -20,10 +20,10 @@ const getAllBlogs = async (req, res) => {
     const filter = {};
 
     if (search) {
-      // filter.$text = { $search: search };
+      const searchRegex = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special chars
       filter.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { excerpt: { $regex: search, $options: 'i' } },
+        { title: { $regex: searchRegex, $options: 'i' } },
+        { excerpt: { $regex: searchRegex, $options: 'i' } },
       ];
     }
 
