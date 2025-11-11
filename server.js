@@ -9,13 +9,6 @@ const server = app.listen(PORT, () => {
   // Log các endpoints chính
   console.log('\n📍 Các endpoints chính:');
   console.log(`   GET    http://localhost:${PORT}/`);
-  console.log(`   GET    http://localhost:${PORT}/about`);
-  console.log(`   GET    http://localhost:${PORT}/health`);
-  console.log(`   GET    http://localhost:${PORT}/api/users`);
-  console.log(`   POST   http://localhost:${PORT}/api/users`);
-  console.log(`   GET    http://localhost:${PORT}/api/users/:id`);
-  console.log(`   PUT    http://localhost:${PORT}/api/users/:id`);
-  console.log(`   DELETE http://localhost:${PORT}/api/users/:id`);
 });
 
 // Xử lý tắt server một cách graceful

@@ -1,6 +1,5 @@
 const { monthNames } = require('../constants');
 const Blog = require('../models/Blog');
-const { createSlug } = require('../utils');
 
 // GET /api/blogs - Lấy danh sách blogs (list view)
 const getAllBlogs = async (req, res) => {
