@@ -3,6 +3,8 @@ const { getHome, getAbout } = require('../controllers/homeController');
 const userRoutes = require('./userRoutes');
 const blogRoutes = require('./blogRoutes');
 const newsRoutes = require('./newsRoutes');
+const marketRoutes = require('./marketRoutes');
+const commodityRoute = require('./commodityRoutes');
 
 const router = express.Router();
 
@@ -14,6 +16,8 @@ router.get('/about', getAbout);
 router.use('/api/users', userRoutes);
 router.use('/api/blogs', blogRoutes);
 router.use('/api/news', newsRoutes);
+router.use('/api/market', marketRoutes);
+router.use('/api/commodity', commodityRoute);
 
 // Health check route
 router.get('/health', (req, res) => {

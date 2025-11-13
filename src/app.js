@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const cron = require('node-cron');
 const connectDB = require('./config/database');
 const routes = require('./routes');
+const { scrapeAllCommodities } = require('./script/scrapeCommodity');
+
 const { requestLogger, notFound, errorHandler } = require('./middleware/errorHandler');
 
 // Tải biến môi trường
@@ -31,6 +34,12 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/', routes);
+
+// Chạy mỗi 6 giờ (6h, 12h, 18h, 24h)
+cron.schedule('0 */6 * * *', async () => {
+  console.log('🌾 Running commodity price scrape...');
+  await scrapeAllCommodities();
+});
 
 // Error handling middleware
 app.use(notFound);
