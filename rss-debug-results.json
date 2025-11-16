@@ -1,0 +1,938 @@
+[
+  {
+    "source": "VnExpress",
+    "category": "Thời sự",
+    "url": "https://vnexpress.net/rss/thoi-su.rss",
+    "itemCount": 60,
+    "duration": "389ms",
+    "success": true,
+    "firstItem": {
+      "title": "Thủ phủ mai Tết xác xơ sau bão Kalmaegi...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Kinh doanh",
+    "url": "https://vnexpress.net/rss/kinh-doanh.rss",
+    "itemCount": 60,
+    "duration": "128ms",
+    "success": true,
+    "firstItem": {
+      "title": "Đại gia Thái hòa vốn nhờ cổ tức sau 13 năm thâu tó...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Bất động sản",
+    "url": "https://vnexpress.net/rss/bat-dong-san.rss",
+    "itemCount": 60,
+    "duration": "889ms",
+    "success": true,
+    "firstItem": {
+      "title": "Thủ tướng yêu cầu Hà Nội khởi công dự án Olympic t...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Khoa học",
+    "url": "https://vnexpress.net/rss/khoa-hoc.rss",
+    "itemCount": 60,
+    "duration": "573ms",
+    "success": true,
+    "firstItem": {
+      "title": "Túi vải đựng iPhone giá 230 USD cháy hàng...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Công nghệ số",
+    "url": "https://vnexpress.net/rss/so-hoa.rss",
+    "itemCount": 60,
+    "duration": "1148ms",
+    "success": true,
+    "firstItem": {
+      "title": "Túi vải đựng iPhone giá 230 USD cháy hàng...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Thế giới",
+    "url": "https://vnexpress.net/rss/the-gioi.rss",
+    "itemCount": 60,
+    "duration": "98ms",
+    "success": true,
+    "firstItem": {
+      "title": "Trung Quốc điều tàu áp sát quần đảo tranh chấp với...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Giải trí",
+    "url": "https://vnexpress.net/rss/giai-tri.rss",
+    "itemCount": 60,
+    "duration": "711ms",
+    "success": true,
+    "firstItem": {
+      "title": "Hương Giang mặc thanh lịch bên dàn thí sinh Miss U...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Giáo dục",
+    "url": "https://vnexpress.net/rss/giao-duc.rss",
+    "itemCount": 60,
+    "duration": "123ms",
+    "success": true,
+    "firstItem": {
+      "title": "Trường chuyên Hà Tĩnh dạy Toán, Hóa, Tin bằng tiến...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Pháp luật",
+    "url": "https://vnexpress.net/rss/phap-luat.rss",
+    "itemCount": 60,
+    "duration": "106ms",
+    "success": true,
+    "firstItem": {
+      "title": "Nỗ lực thành 'triệu phú gà rán' của thanh niên hai...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Sức khỏe",
+    "url": "https://vnexpress.net/rss/suc-khoe.rss",
+    "itemCount": 60,
+    "duration": "162ms",
+    "success": true,
+    "firstItem": {
+      "title": "Suy thận giai đoạn cuối tuổi 20...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Đời sống",
+    "url": "https://vnexpress.net/rss/doi-song.rss",
+    "itemCount": 60,
+    "duration": "107ms",
+    "success": true,
+    "firstItem": {
+      "title": "Khu vườn sân thượng giúp hết lo 'bão giá'...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Du lịch",
+    "url": "https://vnexpress.net/rss/du-lich.rss",
+    "itemCount": 60,
+    "duration": "108ms",
+    "success": true,
+    "firstItem": {
+      "title": "Vườn quốc gia Ba Vì 'thất thủ' vì khách đổ xô săn ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Xe",
+    "url": "https://vnexpress.net/rss/oto-xe-may.rss",
+    "itemCount": 60,
+    "duration": "96ms",
+    "success": true,
+    "firstItem": {
+      "title": "Ôtô bất ngờ tăng tốc, gác chân lên xe khác trên đư...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "VnExpress",
+    "category": "Thể thao",
+    "url": "https://vnexpress.net/rss/the-thao.rss",
+    "itemCount": 60,
+    "duration": "69ms",
+    "success": true,
+    "firstItem": {
+      "title": "10 cha con không chung màu áo ĐTQG...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Thời sự",
+    "url": "https://tuoitre.vn/rss/thoi-su.rss",
+    "itemCount": 50,
+    "duration": "341ms",
+    "success": true,
+    "firstItem": {
+      "title": "Gia Lai khởi công 7 trường học vùng biên giới...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Kinh doanh",
+    "url": "https://tuoitre.vn/rss/kinh-doanh.rss",
+    "itemCount": 50,
+    "duration": "237ms",
+    "success": true,
+    "firstItem": {
+      "title": "Tìm hiểu công nghệ chiếu sáng thông minh, tiết kiệ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Thế giới",
+    "url": "https://tuoitre.vn/rss/the-gioi.rss",
+    "itemCount": 50,
+    "duration": "245ms",
+    "success": true,
+    "firstItem": {
+      "title": "Theo yêu cầu của ông Trump, Bộ Tư pháp Mỹ điều tra...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Công nghệ",
+    "url": "https://tuoitre.vn/rss/nhip-song-so.rss",
+    "itemCount": 50,
+    "duration": "228ms",
+    "success": true,
+    "firstItem": {
+      "title": "Google Photos 'lột xác' thành trợ lý sáng tạo, ngh...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Giáo dục",
+    "url": "https://tuoitre.vn/rss/giao-duc.rss",
+    "itemCount": 50,
+    "duration": "287ms",
+    "success": true,
+    "firstItem": {
+      "title": "Đà Nẵng đồng loạt khởi công 5 trường nội trú các x...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Pháp luật",
+    "url": "https://tuoitre.vn/rss/phap-luat.rss",
+    "itemCount": 50,
+    "duration": "105ms",
+    "success": true,
+    "firstItem": {
+      "title": "Khởi tố nữ 9X dụ người đàn ông U70 đi nhà nghỉ rồi...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Xe",
+    "url": "https://tuoitre.vn/rss/xe.rss",
+    "itemCount": 50,
+    "duration": "107ms",
+    "success": true,
+    "firstItem": {
+      "title": "Mazda3 dễ bị 'khai tử', thay bằng xe điện 'đặc Tru...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Du lịch",
+    "url": "https://tuoitre.vn/rss/du-lich.rss",
+    "itemCount": 50,
+    "duration": "118ms",
+    "success": true,
+    "firstItem": {
+      "title": "Hàng không Trung Quốc tạo điều kiện cho khách hủy ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Nhịp sống trẻ",
+    "url": "https://tuoitre.vn/rss/nhip-song-tre.rss",
+    "itemCount": 50,
+    "duration": "91ms",
+    "success": true,
+    "firstItem": {
+      "title": "Tìm đến AI để lấp khoảng trống cảm xúc, song càng ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Văn hóa",
+    "url": "https://tuoitre.vn/rss/van-hoa.rss",
+    "itemCount": 50,
+    "duration": "172ms",
+    "success": true,
+    "firstItem": {
+      "title": "Phương Hồng Thủy 30 năm trở lại sàn kịch vì vở diễ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Giải trí",
+    "url": "https://tuoitre.vn/rss/giai-tri.rss",
+    "itemCount": 50,
+    "duration": "163ms",
+    "success": true,
+    "firstItem": {
+      "title": "Phim Mưa đỏ chiếu trực tuyến miễn phí từ ngày 17-1...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Tuổi Trẻ",
+    "category": "Thể thao",
+    "url": "https://tuoitre.vn/rss/the-thao.rss",
+    "itemCount": 50,
+    "duration": "121ms",
+    "success": true,
+    "firstItem": {
+      "title": "Xác định cặp đấu vòng 16 đội U17 World Cup 2025...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Thời sự",
+    "url": "https://thanhnien.vn/rss/thoi-su.rss",
+    "itemCount": 500,
+    "duration": "1196ms",
+    "success": true,
+    "firstItem": {
+      "title": "Kiến nghị khởi tố nhiều cán bộ 'xà xẻo' lô đất côn...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Kinh tế",
+    "url": "https://thanhnien.vn/rss/kinh-te.rss",
+    "itemCount": 500,
+    "duration": "1017ms",
+    "success": true,
+    "firstItem": {
+      "title": "Người dùng chú ý: Lãi suất thẻ tín dụng tăng vọt l...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Thế giới",
+    "url": "https://thanhnien.vn/rss/the-gioi.rss",
+    "itemCount": 500,
+    "duration": "1073ms",
+    "success": true,
+    "firstItem": {
+      "title": "Cựu trụ trì Thiếu Lâm tự bị bắt với cáo buộc biển ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Công nghệ",
+    "url": "https://thanhnien.vn/rss/cong-nghe.rss",
+    "itemCount": 500,
+    "duration": "764ms",
+    "success": true,
+    "firstItem": {
+      "title": "Windows và Office không bản quyền đồng loạt bị Mic...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Blockchain",
+    "url": "https://thanhnien.vn/rss/cong-nghe/blockchain.rss",
+    "itemCount": 500,
+    "duration": "785ms",
+    "success": true,
+    "firstItem": {
+      "title": "Giá Bitcoin hôm nay 16.11.2025: Người chơi bán thá...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Game",
+    "url": "https://thanhnien.vn/rss/cong-nghe/game.rss",
+    "itemCount": 500,
+    "duration": "908ms",
+    "success": true,
+    "firstItem": {
+      "title": "ViewSonic tổ chức talkshow về vai trò màn hình tro...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Giải trí",
+    "url": "https://thanhnien.vn/rss/giai-tri.rss",
+    "itemCount": 500,
+    "duration": "797ms",
+    "success": true,
+    "firstItem": {
+      "title": "Minh Phụng - Ngọc Thiện đăng quang quán quân Siêu ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Thể thao",
+    "url": "https://thanhnien.vn/rss/the-thao.rss",
+    "itemCount": 500,
+    "duration": "1246ms",
+    "success": true,
+    "firstItem": {
+      "title": "Thanh Thúy giúp CLB Gunma Green Wings thắng trận t...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Giáo dục",
+    "url": "https://thanhnien.vn/rss/giao-duc.rss",
+    "itemCount": 500,
+    "duration": "1923ms",
+    "success": true,
+    "firstItem": {
+      "title": "Linearthinking giúp học sinh, giáo viên chinh phục...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Sức khỏe",
+    "url": "https://thanhnien.vn/rss/suc-khoe.rss",
+    "itemCount": 500,
+    "duration": "981ms",
+    "success": true,
+    "firstItem": {
+      "title": "Loại vitamin giúp giảm nguy cơ mắc sỏi thận...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Đời sống",
+    "url": "https://thanhnien.vn/rss/doi-song.rss",
+    "itemCount": 500,
+    "duration": "1237ms",
+    "success": true,
+    "firstItem": {
+      "title": "Xổ số miền Nam ngày 16 tháng 11 - Kết quả xổ số hô...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Du lịch",
+    "url": "https://thanhnien.vn/rss/du-lich.rss",
+    "itemCount": 500,
+    "duration": "1954ms",
+    "success": true,
+    "firstItem": {
+      "title": "Bức ảnh ám ảnh trong vụ tai nạn máy bay 'tồi tệ nh...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Thanh Niên",
+    "category": "Xe",
+    "url": "https://thanhnien.vn/rss/xe.rss",
+    "itemCount": 500,
+    "duration": "2193ms",
+    "success": true,
+    "firstItem": {
+      "title": "10 ô tô động cơ xăng, dầu bán chạy nhất tháng 10.2...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Vietnamnet",
+    "category": "Thời sự",
+    "url": "https://vietnamnet.vn/rss/thoi-su.rss",
+    "itemCount": 60,
+    "duration": "2259ms",
+    "success": true,
+    "firstItem": {
+      "title": "Mưa lớn, nước đổ về cuồn cuộn khiến đường Hồ Chí M...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Vietnamnet",
+    "category": "Kinh doanh",
+    "url": "https://vietnamnet.vn/rss/kinh-doanh.rss",
+    "itemCount": 60,
+    "duration": "757ms",
+    "success": true,
+    "firstItem": {
+      "title": "Cà chua hơn 60.000 đồng/kg, đắt gấp 4 lần một ký n...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Vietnamnet",
+    "category": "Bất động sản",
+    "url": "https://vietnamnet.vn/rss/bat-dong-san.rss",
+    "itemCount": 60,
+    "duration": "1240ms",
+    "success": true,
+    "firstItem": {
+      "title": "Đề xuất toàn bộ thủ tục đất đai về một mối, cấp xã...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Vietnamnet",
+    "category": "Thế giới",
+    "url": "https://vietnamnet.vn/rss/the-gioi.rss",
+    "itemCount": 60,
+    "duration": "195ms",
+    "success": true,
+    "firstItem": {
+      "title": "Mỹ và Israel &apos;bế tắc&apos; vì ông Trump xem x...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Vietnamnet",
+    "category": "Công nghệ",
+    "url": "https://vietnamnet.vn/rss/cong-nghe.rss",
+    "itemCount": 36,
+    "duration": "1020ms",
+    "success": true,
+    "firstItem": {
+      "title": "Thử nghiệm thiết bị 5G tại Trung Đông, Make in Vie...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Vietnamnet",
+    "category": "Giải trí",
+    "url": "https://vietnamnet.vn/rss/giai-tri.rss",
+    "itemCount": 60,
+    "duration": "239ms",
+    "success": true,
+    "firstItem": {
+      "title": "Di sản thế giới kéo co gây ấn tượng trong &apos;Fe...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Vietnamnet",
+    "category": "Thể thao",
+    "url": "https://vietnamnet.vn/rss/the-thao.rss",
+    "itemCount": 60,
+    "duration": "192ms",
+    "success": true,
+    "firstItem": {
+      "title": "Thanh Thúy ghi 12 điểm giúp Gunma Green Wings thắn...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Vietnamnet",
+    "category": "Giáo dục",
+    "url": "https://vietnamnet.vn/rss/giao-duc.rss",
+    "itemCount": 60,
+    "duration": "540ms",
+    "success": true,
+    "firstItem": {
+      "title": "Lời chúc thầy cô ngày 20/11 theo môn học hài hước ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Vietnamnet",
+    "category": "Sức khỏe",
+    "url": "https://vietnamnet.vn/rss/suc-khoe.rss",
+    "itemCount": 60,
+    "duration": "327ms",
+    "success": true,
+    "firstItem": {
+      "title": "Nam sinh phải đi cấp cứu sau 4 giờ đau dữ dội vùng...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Vietnamnet",
+    "category": "Đời sống",
+    "url": "https://vietnamnet.vn/rss/doi-song.rss",
+    "itemCount": 60,
+    "duration": "104ms",
+    "success": true,
+    "firstItem": {
+      "title": "Quán ăn có bà chủ &apos;đọc rap tính tiền&apos; sắ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Vietnamnet",
+    "category": "Du lịch",
+    "url": "https://vietnamnet.vn/rss/du-lich.rss",
+    "itemCount": 60,
+    "duration": "77ms",
+    "success": true,
+    "firstItem": {
+      "title": "Khám phá gần 2km đường rừng mạo hiểm chinh phục đỉ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Thời sự",
+    "url": "https://dantri.com.vn/rss/xa-hoi.rss",
+    "itemCount": 100,
+    "duration": "705ms",
+    "success": true,
+    "firstItem": {
+      "title": "Hai vụ cháy trong một buổi chiều ở Nghệ An...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Kinh tế",
+    "url": "https://dantri.com.vn/rss/kinh-doanh.rss",
+    "itemCount": 100,
+    "duration": "402ms",
+    "success": true,
+    "firstItem": {
+      "title": "Thái Lan áp thuế hàng giá rẻ nhập khẩu, bảo vệ doa...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Bất động sản",
+    "url": "https://dantri.com.vn/rss/bat-dong-san.rss",
+    "itemCount": 100,
+    "duration": "244ms",
+    "success": true,
+    "firstItem": {
+      "title": "Người dân có thể nộp sổ đỏ qua VNeID; chính sách g...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Thế giới",
+    "url": "https://dantri.com.vn/rss/the-gioi.rss",
+    "itemCount": 100,
+    "duration": "174ms",
+    "success": true,
+    "firstItem": {
+      "title": "Phản ứng cứng rắn của Nga khi Ukraine đình chỉ đàm...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Công nghệ",
+    "url": "https://dantri.com.vn/rss/suc-manh-so.rss",
+    "itemCount": 100,
+    "duration": "203ms",
+    "success": true,
+    "firstItem": {
+      "title": "Chuyên mục Sức mạnh số đổi tên thành Công nghệ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Giải trí",
+    "url": "https://dantri.com.vn/rss/giai-tri.rss",
+    "itemCount": 100,
+    "duration": "202ms",
+    "success": true,
+    "firstItem": {
+      "title": "Khoảnh khắc Bi Rain vén áo khoe cơ bụng 6 múi tại ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Thể thao",
+    "url": "https://dantri.com.vn/rss/the-thao.rss",
+    "itemCount": 100,
+    "duration": "162ms",
+    "success": true,
+    "firstItem": {
+      "title": "HLV U22 Việt Nam hé lộ phương án đối đầu với U22 H...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Giáo dục",
+    "url": "https://dantri.com.vn/rss/giao-duc.rss",
+    "itemCount": 100,
+    "duration": "175ms",
+    "success": true,
+    "firstItem": {
+      "title": "Phó Thủ tướng Hồ Quốc Dũng: Trường học vùng biên s...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Sức khỏe",
+    "url": "https://dantri.com.vn/rss/suc-khoe.rss",
+    "itemCount": 100,
+    "duration": "142ms",
+    "success": true,
+    "firstItem": {
+      "title": "Phổi mất bao lâu để hồi phục sau khi ngừng hút thu...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Văn hóa",
+    "url": "https://dantri.com.vn/rss/van-hoa.rss",
+    "itemCount": 100,
+    "duration": "358ms",
+    "success": true,
+    "firstItem": {
+      "title": "Diễn viên nhí Gia Bảo bị bỏ rơi từ nhỏ, ước gặp ch...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Pháp luật",
+    "url": "https://dantri.com.vn/rss/phap-luat.rss",
+    "itemCount": 100,
+    "duration": "333ms",
+    "success": true,
+    "firstItem": {
+      "title": "Kẻ đốt quán cà phê khiến 11 người tử vong ở Hà Nội...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Dân Trí",
+    "category": "Ô tô - Xe máy",
+    "url": "https://dantri.com.vn/rss/o-to-xe-may.rss",
+    "itemCount": 100,
+    "duration": "176ms",
+    "success": true,
+    "firstItem": {
+      "title": "10 ô tô xăng/dầu bán chạy tháng 10: Xe Nhật áp đảo...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Người Lao Động",
+    "category": "Thời sự",
+    "url": "https://nld.com.vn/rss/thoi-su.rss",
+    "itemCount": 500,
+    "duration": "3186ms",
+    "success": true,
+    "firstItem": {
+      "title": "Trái tim miền Trung trao nhiều suất quà ý nghĩa tạ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Người Lao Động",
+    "category": "Kinh tế",
+    "url": "https://nld.com.vn/rss/kinh-te.rss",
+    "itemCount": 500,
+    "duration": "2160ms",
+    "success": true,
+    "firstItem": {
+      "title": "CLIP: Tôm sú dài hơn 20 cm tại \"Ngày hội Cua Cà Ma...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Người Lao Động",
+    "category": "Giải trí",
+    "url": "https://nld.com.vn/rss/giai-tri.rss",
+    "itemCount": 500,
+    "duration": "1567ms",
+    "success": true,
+    "firstItem": {
+      "title": "Hoa hậu Lý Kim Thảo làm Đại sứ ở quê nhà...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Người Lao Động",
+    "category": "Thể thao",
+    "url": "https://nld.com.vn/rss/the-thao.rss",
+    "itemCount": 500,
+    "duration": "1226ms",
+    "success": true,
+    "firstItem": {
+      "title": "Thể hình Việt Nam giành hat-trick á quân giải vô đ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Người Lao Động",
+    "category": "Pháp luật",
+    "url": "https://nld.com.vn/rss/phap-luat.rss",
+    "itemCount": 500,
+    "duration": "2192ms",
+    "success": true,
+    "firstItem": {
+      "title": "Ba thanh niên bị công an bắt giữ vì trộm cắp trên ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Người Lao Động",
+    "category": "Sức khỏe",
+    "url": "https://nld.com.vn/rss/suc-khoe.rss",
+    "itemCount": 500,
+    "duration": "983ms",
+    "success": true,
+    "firstItem": {
+      "title": "Bác sĩ lý giải nguyên nhân số ca sinh mổ tăng...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Người Lao Động",
+    "category": "Đời sống",
+    "url": "https://nld.com.vn/rss/doi-song.rss",
+    "itemCount": 276,
+    "duration": "497ms",
+    "success": true,
+    "firstItem": {
+      "title": "Tuần tới, cung hoàng đạo nào sẽ đối mặt với áp lực...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Người Lao Động",
+    "category": "Du lịch",
+    "url": "https://nld.com.vn/rss/du-lich.rss",
+    "itemCount": 500,
+    "duration": "658ms",
+    "success": true,
+    "firstItem": {
+      "title": "Phong Nha - Kẻ Bàng giành \"cú đúp\" giải thưởng Du ...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Báo Đầu Tư",
+    "category": "Thời sự",
+    "url": "https://baodautu.vn/rss/thoi-su.rss",
+    "itemCount": 0,
+    "duration": "338ms",
+    "success": true,
+    "firstItem": null
+  },
+  {
+    "source": "Báo Đầu Tư",
+    "category": "Tài chính",
+    "url": "https://baodautu.vn/rss/tai-chinh.rss",
+    "itemCount": 0,
+    "duration": "135ms",
+    "success": true,
+    "firstItem": null
+  },
+  {
+    "source": "Báo Đầu Tư",
+    "category": "Bất động sản",
+    "url": "https://baodautu.vn/rss/bat-dong-san.rss",
+    "itemCount": 0,
+    "duration": "160ms",
+    "success": true,
+    "firstItem": null
+  },
+  {
+    "source": "Báo Đầu Tư",
+    "category": "Doanh nghiệp",
+    "url": "https://baodautu.vn/rss/doanh-nghiep.rss",
+    "itemCount": 0,
+    "duration": "126ms",
+    "success": true,
+    "firstItem": null
+  },
+  {
+    "source": "Báo Đầu Tư",
+    "category": "Chứng khoán",
+    "url": "https://baodautu.vn/rss/chung-khoan.rss",
+    "itemCount": 0,
+    "duration": "172ms",
+    "success": true,
+    "firstItem": null
+  },
+  {
+    "source": "Báo Đầu Tư",
+    "category": "Kinh tế số",
+    "url": "https://baodautu.vn/rss/kinh-te-so.rss",
+    "itemCount": 0,
+    "duration": "133ms",
+    "success": true,
+    "firstItem": null
+  },
+  {
+    "source": "Báo Đầu Tư",
+    "category": "Công nghệ",
+    "url": "https://baodautu.vn/rss/vien-thong-cong-nghe.rss",
+    "itemCount": 0,
+    "duration": "167ms",
+    "success": true,
+    "firstItem": null
+  },
+  {
+    "source": "Báo Đầu Tư",
+    "category": "Thế giới",
+    "url": "https://baodautu.vn/rss/kinh-te-the-gioi.rss",
+    "itemCount": 0,
+    "duration": "138ms",
+    "success": true,
+    "firstItem": null
+  },
+  {
+    "source": "Báo Lâm Đồng",
+    "category": "Thuế - Tài chính",
+    "url": "https://baolamdong.vn/rss/kinh-te/thue-tai-chinh",
+    "itemCount": 30,
+    "duration": "403ms",
+    "success": true,
+    "firstItem": {
+      "title": "Giá cà phê 16/11: Giảm sâu tới 2.700 đồng/kg tại T...",
+      "hasImage": true
+    }
+  },
+  {
+    "source": "Báo Lâm Đồng",
+    "category": "Kinh tế",
+    "url": "https://baolamdong.vn/rss/kinh-te",
+    "itemCount": 30,
+    "duration": "178ms",
+    "success": true,
+    "firstItem": {
+      "title": "Liên minh châu Âu đạt thỏa thuận tạm thời về ngân ...",
+      "hasImage": true
+    }
+  }
+]

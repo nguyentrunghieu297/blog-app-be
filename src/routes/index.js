@@ -1,5 +1,6 @@
 const express = require('express');
 const { getHome, getAbout } = require('../controllers/homeController');
+const { performanceMonitor } = require('../middleware/performanceMonitor');
 const userRoutes = require('./userRoutes');
 const blogRoutes = require('./blogRoutes');
 const newsRoutes = require('./newsRoutes');
@@ -15,7 +16,7 @@ router.get('/about', getAbout);
 // API routes
 router.use('/api/users', userRoutes);
 router.use('/api/blogs', blogRoutes);
-router.use('/api/news', newsRoutes);
+router.use('/api/news', performanceMonitor, newsRoutes);
 router.use('/api/market', marketRoutes);
 router.use('/api/commodity', commodityRoute);
 

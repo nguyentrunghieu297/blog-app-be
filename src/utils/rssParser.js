@@ -5,7 +5,7 @@ const he = require('he');
 
 const parser = new Parser({
   defaultRSS: 2.0,
-  timeout: 10000,
+  timeout: 8000, // ✅ Giảm từ 10s xuống 8s
   customFields: {
     item: [
       ['media:content', 'mediaContent'],
@@ -16,100 +16,176 @@ const parser = new Parser({
   },
 });
 
-const cache = new NodeCache({ stdTTL: 300 }); // Cache 5 phút
+// ✅ Tăng cache TTL lên 15 phút (RSS không thay đổi liên tục)
+const cache = new NodeCache({
+  stdTTL: 900, // 15 phút
+  checkperiod: 180,
+  useClones: false,
+  maxKeys: 200, // ✅ Limit số keys trong cache
+});
 
-/**
- * Lấy hình ảnh từ các nguồn có thể trong item RSS
- */
+const pendingRequests = new Map();
+
+// ✅ Thêm cache cho processed results
+const processedCache = new NodeCache({
+  stdTTL: 300, // 5 phút cho processed results
+  checkperiod: 60,
+  useClones: false,
+});
+
+function isImageUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'];
+
+  const extensionPattern = new RegExp(`\\.(${imageExtensions.join('|')})($|\\?)`, 'i');
+  if (extensionPattern.test(url)) return true;
+
+  const vietnameseDomains = [
+    'vnecdn\\.net',
+    'vietnamnet\\.vn',
+    'vgcloud\\.vn',
+    'znews-photo',
+    'kenh14cdn\\.com',
+    'afamilycdn\\.com',
+    'dantri\\.com\\.vn',
+    'thanhnien\\.vn',
+  ];
+
+  const domainPattern = new RegExp(`(${vietnameseDomains.join('|')})`, 'i');
+  return domainPattern.test(url);
+}
+
 function extractImage(item) {
-  // 1️⃣ Ưu tiên thẻ <media:content> hoặc <media:thumbnail>
   const mediaUrl = item.mediaContent?.url || item.mediaThumbnail?.url || item.enclosure?.url;
+  if (mediaUrl && isImageUrl(mediaUrl)) return mediaUrl;
 
-  if (mediaUrl && /\.(jpg|jpeg|png|gif|webp)$/i.test(mediaUrl)) {
-    return mediaUrl;
-  }
-
-  // 2️⃣ Thử tìm ảnh trong content hoặc description (dạng HTML)
   const html = item.contentEncoded || item.content || item.description || '';
-  // ✅ Fix: Hỗ trợ cả single quote và không có quote
-  const imgMatch = html.match(/<img[^>]+src=["']?([^"'>]+)["']?/i);
-  if (imgMatch && imgMatch[1]) {
-    // Validate URL có phải là ảnh không
-    if (/\.(jpg|jpeg|png|gif|webp)$/i.test(imgMatch[1])) {
-      return imgMatch[1];
+
+  // ✅ Chỉ dùng 2 patterns phổ biến nhất
+  const imagePatterns = [
+    /<img[^>]+src=["']?([^"'>\s]+)["']?/i,
+    /<img[^>]+data-src=["']?([^"'>\s]+)["']?/i,
+  ];
+
+  for (const pattern of imagePatterns) {
+    const match = html.match(pattern);
+    if (match && match[1]) {
+      const imageUrl = match[1].trim();
+      if (isImageUrl(imageUrl)) return imageUrl;
     }
   }
 
-  // 3️⃣ Nếu không có, trả về null
   return null;
 }
 
-/**
- * Làm sạch description bằng cách loại bỏ HTML và các phần thừa
- */
 function cleanDescription(desc) {
   if (!desc) return '';
-
-  // 1) Xóa phần đóng CDATA dư (]]>)
   desc = desc.replace(/]]>/g, '');
-
-  // 2) Loại toàn bộ HTML, giữ text thuần
   desc = sanitizeHtml(desc, {
     allowedTags: [],
     allowedAttributes: {},
   });
-
-  // 3) Xóa khoảng trắng thừa và trim
-  desc = desc.replace(/\s+/g, ' ').trim();
-
-  return desc;
+  return desc.replace(/\s+/g, ' ').trim().substring(0, 300); // ✅ Limit 300 chars
 }
 
-/**
- * Validate và parse pubDate an toàn
- */
 function parsePubDate(dateString) {
-  if (!dateString) return new Date(); // Fallback về hiện tại
+  if (!dateString) return new Date();
   const parsed = new Date(dateString);
-  // Kiểm tra xem date có hợp lệ không
-  if (isNaN(parsed.getTime())) {
-    console.warn(`⚠️ Invalid date format: ${dateString}`);
-    return new Date(); // Fallback về hiện tại
-  }
+  if (isNaN(parsed.getTime())) return new Date();
   return parsed;
 }
 
-/**
- * Fetch RSS feed từ URL, có caching và decode HTML entity
- */
 const fetchRSS = async (url) => {
   try {
     const cachedData = cache.get(url);
     if (cachedData) return cachedData;
 
-    const feed = await parser.parseURL(url);
+    if (pendingRequests.has(url)) {
+      return await pendingRequests.get(url);
+    }
 
-    const items = feed.items.map((item) => {
-      const rawDesc =
-        item.contentSnippet || item.contentEncoded || item.content || item.description || '';
+    const fetchPromise = (async () => {
+      try {
+        const feed = await parser.parseURL(url);
 
-      return {
-        title: he.decode(item.title?.trim() || ''),
-        // ✅ Fix: Gọi cleanDescription để xóa ]]> và HTML
-        description: cleanDescription(he.decode(rawDesc)),
-        link: item.link,
-        // ✅ Fix: Validate pubDate trước khi parse
-        pubDate: parsePubDate(item.pubDate),
-        featuredImage: extractImage(item),
-      };
-    });
+        // ✅ Chỉ lấy 30 items mới nhất từ mỗi feed
+        const recentItems = feed.items.slice(0, 30);
 
-    cache.set(url, items);
-    return items;
+        const items = recentItems.map((item) => {
+          const rawDesc = item.contentSnippet || item.description || '';
+
+          return {
+            title: he.decode(item.title?.trim() || '').substring(0, 200), // ✅ Limit title
+            description: cleanDescription(he.decode(rawDesc)),
+            link: item.link,
+            pubDate: parsePubDate(item.pubDate),
+            featuredImage: extractImage(item),
+          };
+        });
+
+        cache.set(url, items);
+        return items;
+      } finally {
+        pendingRequests.delete(url);
+      }
+    })();
+
+    pendingRequests.set(url, fetchPromise);
+    return await fetchPromise;
   } catch (error) {
-    console.warn(`⚠️ Lỗi khi parser RSS từ ${url}:`, error.message);
+    pendingRequests.delete(url);
+    console.warn(`⚠️ Failed to fetch ${url}`);
     return [];
   }
 };
 
-module.exports = { fetchRSS };
+// ✅ Tăng concurrency lên 20 và thêm timeout
+const fetchRSSBatch = async (urls, concurrency = 20) => {
+  const results = [];
+  const startTime = Date.now();
+
+  for (let i = 0; i < urls.length; i += concurrency) {
+    const batch = urls.slice(i, i + concurrency);
+
+    // ✅ Thêm timeout cho mỗi batch
+    const batchPromise = Promise.allSettled(
+      batch.map((url) =>
+        Promise.race([
+          fetchRSS(url),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 8000)),
+        ])
+      )
+    );
+
+    const batchResults = await batchPromise;
+
+    results.push(
+      ...batchResults.map((result, idx) => ({
+        url: batch[idx],
+        data: result.status === 'fulfilled' ? result.value : [],
+        error: result.status === 'rejected' ? result.reason : null,
+      }))
+    );
+
+    // ✅ Log progress
+    if (i % 20 === 0) {
+      console.log(
+        `📊 Processed ${i + batch.length}/${urls.length} feeds (${Date.now() - startTime}ms)`
+      );
+    }
+  }
+
+  console.log(`✅ Total fetch time: ${Date.now() - startTime}ms`);
+  return results;
+};
+
+// ✅ Export cache stats cho monitoring
+const getCacheStats = () => {
+  return {
+    rss: cache.getStats(),
+    processed: processedCache.getStats(),
+  };
+};
+
+module.exports = { fetchRSS, fetchRSSBatch, processedCache, getCacheStats };
