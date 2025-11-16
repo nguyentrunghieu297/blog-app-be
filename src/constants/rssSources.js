@@ -131,8 +131,8 @@ const rssSources = [
     domain: 'baolamdong.vn',
     icon: 'https://baolamdong.vn/favicon.ico',
     categories: [
-      { name: 'Thuế - Tài chính', url: 'https://baolamdong.vn/rss/kinh-te/thue-tai-chinh' },
       { name: 'Kinh tế', url: 'https://baolamdong.vn/rss/kinh-te' },
+      { name: 'Xã hội', url: 'https://baolamdong.vn/rss/xa-hoi' },
     ],
   },
 ];
