@@ -1,5 +1,6 @@
 const Parser = require('rss-parser');
 const NodeCache = require('node-cache');
+const sanitizeHtml = require('sanitize-html');
 const he = require('he');
 
 const parser = new Parser({
@@ -30,11 +31,26 @@ function extractImage(item) {
 
   // 2️⃣ Thử tìm ảnh trong content hoặc description (dạng HTML)
   const html = item.contentEncoded || item.content || item.description || '';
-  const imgMatch = html.match(/<img[^>]+src="([^">]+)"/i);
+  const imgMatch = html.match(/<img[^>]+src=["']?([^"'>]+)["']?/i);
   if (imgMatch) return imgMatch[1];
 
   // 3️⃣ Nếu không có, trả về null
   return null;
+}
+
+/** Làm sạch description bằng cách loại bỏ HTML và các phần thừa
+ */
+
+function cleanDescription(desc) {
+  if (!desc) return '';
+  // 1) Xóa phần đóng CDATA dư
+  desc = desc.replace(/]]>/g, '');
+  // 2) Loại toàn bộ HTML, giữ text thuần
+  desc = sanitizeHtml(desc, {
+    allowedTags: [],
+    allowedAttributes: {},
+  });
+  return desc.trim();
 }
 
 /**
@@ -47,13 +63,18 @@ const fetchRSS = async (url) => {
 
     const feed = await parser.parseURL(url);
 
-    const items = feed.items.map((item) => ({
-      title: he.decode(item.title?.trim() || ''),
-      description: he.decode(item.contentSnippet || item.content || item.description || ''),
-      link: item.link,
-      pubDate: item.pubDate ? new Date(item.pubDate) : null,
-      featuredImage: extractImage(item), // 👈 thêm phần hình ảnh
-    }));
+    const items = feed.items.map((item) => {
+      const rawDesc =
+        item.contentSnippet || item.contentEncoded || item.content || item.description || '';
+
+      return {
+        title: he.decode(item.title?.trim() || ''),
+        description: cleanDescription(he.decode(rawDesc)), // ✅ Thêm cleanDescription
+        link: item.link,
+        pubDate: item.pubDate ? new Date(item.pubDate) : null,
+        featuredImage: extractImage(item),
+      };
+    });
 
     cache.set(url, items);
     return items;

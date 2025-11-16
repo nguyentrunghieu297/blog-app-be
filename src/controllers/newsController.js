@@ -43,7 +43,7 @@ const getAllNews = async (req, res) => {
           allNews.push(
             ...items.map((i) => ({
               title: i.title,
-              description: i.description || i.contentSnippet || i.content || '',
+              description: i.description || '',
               link: i.link,
               pubDate: i.pubDate ? new Date(i.pubDate) : null,
               featuredImage: i.featuredImage || null,
@@ -60,7 +60,11 @@ const getAllNews = async (req, res) => {
     }
 
     // Sắp xếp tin mới nhất lên đầu
-    const sorted = allNews.sort((a, b) => b.pubDate - a.pubDate);
+    const sorted = allNews.sort((a, b) => {
+      const dateA = a.pubDate ? a.pubDate.getTime() : 0;
+      const dateB = b.pubDate ? b.pubDate.getTime() : 0;
+      return dateB - dateA;
+    });
 
     res.json({
       success: true,
