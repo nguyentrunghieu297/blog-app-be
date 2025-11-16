@@ -2,6 +2,35 @@ const { rssSources } = require('../constants/rssSources');
 const { fetchRSS } = require('../utils/rssParser.js');
 const { categoryMapping, frontendCategories } = require('../constants/categoryMapping');
 
+/**
+ * Normalize string để so sánh category
+ */
+function normalizeString(str) {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Xóa dấu tiếng Việt
+    .trim();
+}
+
+/**
+ * Kiểm tra xem category có match với target không
+ */
+function isCategoryMatch(categoryName, targetCategories) {
+  const normalizedCategory = normalizeString(categoryName);
+
+  return targetCategories.some((target) => {
+    const normalizedTarget = normalizeString(target);
+
+    // Exact match hoặc category chứa target (hoặc ngược lại)
+    return (
+      normalizedCategory === normalizedTarget ||
+      normalizedCategory.includes(normalizedTarget) ||
+      normalizedTarget.includes(normalizedCategory)
+    );
+  });
+}
+
 const getAllNews = async (req, res) => {
   try {
     const { source: sourceQuery, category: categoryKey, limit = 30 } = req.query;
@@ -25,14 +54,8 @@ const getAllNews = async (req, res) => {
       for (const category of categories) {
         // Nếu có category key và không phải "tong-quan"
         if (targetCategories !== null && targetCategories !== undefined) {
-          // Kiểm tra xem category.name có nằm trong danh sách targetCategories không
-          const isMatch = targetCategories.some(
-            (target) =>
-              category.name.toLowerCase().includes(target.toLowerCase()) ||
-              target.toLowerCase().includes(category.name.toLowerCase())
-          );
-
-          if (!isMatch) {
+          // ✅ Fix: Dùng hàm normalize để match chính xác hơn
+          if (!isCategoryMatch(category.name, targetCategories)) {
             continue;
           }
         }
@@ -43,9 +66,10 @@ const getAllNews = async (req, res) => {
           allNews.push(
             ...items.map((i) => ({
               title: i.title,
+              // ✅ Fix: Đơn giản hóa, không cần fallback vì đã xử lý trong parser
               description: i.description || '',
               link: i.link,
-              pubDate: i.pubDate ? new Date(i.pubDate) : null,
+              pubDate: i.pubDate, // ✅ Đã được validate trong parser
               featuredImage: i.featuredImage || null,
               sourceName: source.name,
               sourceIcon: source.icon,
@@ -59,17 +83,20 @@ const getAllNews = async (req, res) => {
       }
     }
 
-    // Sắp xếp tin mới nhất lên đầu
+    // ✅ Fix: Sắp xếp an toàn hơn với null dates
     const sorted = allNews.sort((a, b) => {
       const dateA = a.pubDate ? a.pubDate.getTime() : 0;
       const dateB = b.pubDate ? b.pubDate.getTime() : 0;
       return dateB - dateA;
     });
 
+    // Parse limit thành số và validate
+    const parsedLimit = Math.max(1, parseInt(limit) || 30);
+
     res.json({
       success: true,
       count: sorted.length,
-      data: sorted.slice(0, limit),
+      data: sorted.slice(0, parsedLimit),
     });
   } catch (error) {
     console.error('❌ Lỗi khi tải RSS:', error);

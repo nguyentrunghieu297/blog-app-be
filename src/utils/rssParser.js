@@ -31,26 +31,52 @@ function extractImage(item) {
 
   // 2️⃣ Thử tìm ảnh trong content hoặc description (dạng HTML)
   const html = item.contentEncoded || item.content || item.description || '';
+  // ✅ Fix: Hỗ trợ cả single quote và không có quote
   const imgMatch = html.match(/<img[^>]+src=["']?([^"'>]+)["']?/i);
-  if (imgMatch) return imgMatch[1];
+  if (imgMatch && imgMatch[1]) {
+    // Validate URL có phải là ảnh không
+    if (/\.(jpg|jpeg|png|gif|webp)$/i.test(imgMatch[1])) {
+      return imgMatch[1];
+    }
+  }
 
   // 3️⃣ Nếu không có, trả về null
   return null;
 }
 
-/** Làm sạch description bằng cách loại bỏ HTML và các phần thừa
+/**
+ * Làm sạch description bằng cách loại bỏ HTML và các phần thừa
  */
-
 function cleanDescription(desc) {
   if (!desc) return '';
-  // 1) Xóa phần đóng CDATA dư
+
+  // 1) Xóa phần đóng CDATA dư (]]>)
   desc = desc.replace(/]]>/g, '');
+
   // 2) Loại toàn bộ HTML, giữ text thuần
   desc = sanitizeHtml(desc, {
     allowedTags: [],
     allowedAttributes: {},
   });
-  return desc.trim();
+
+  // 3) Xóa khoảng trắng thừa và trim
+  desc = desc.replace(/\s+/g, ' ').trim();
+
+  return desc;
+}
+
+/**
+ * Validate và parse pubDate an toàn
+ */
+function parsePubDate(dateString) {
+  if (!dateString) return new Date(); // Fallback về hiện tại
+  const parsed = new Date(dateString);
+  // Kiểm tra xem date có hợp lệ không
+  if (isNaN(parsed.getTime())) {
+    console.warn(`⚠️ Invalid date format: ${dateString}`);
+    return new Date(); // Fallback về hiện tại
+  }
+  return parsed;
 }
 
 /**
@@ -69,9 +95,11 @@ const fetchRSS = async (url) => {
 
       return {
         title: he.decode(item.title?.trim() || ''),
-        description: cleanDescription(he.decode(rawDesc)), // ✅ Thêm cleanDescription
+        // ✅ Fix: Gọi cleanDescription để xóa ]]> và HTML
+        description: cleanDescription(he.decode(rawDesc)),
         link: item.link,
-        pubDate: item.pubDate ? new Date(item.pubDate) : null,
+        // ✅ Fix: Validate pubDate trước khi parse
+        pubDate: parsePubDate(item.pubDate),
         featuredImage: extractImage(item),
       };
     });
@@ -79,7 +107,7 @@ const fetchRSS = async (url) => {
     cache.set(url, items);
     return items;
   } catch (error) {
-    console.warn(`⚠️ Lỗi khi fetch RSS từ ${url}:`, error.message);
+    console.warn(`⚠️ Lỗi khi parser RSS từ ${url}:`, error.message);
     return [];
   }
 };
