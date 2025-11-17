@@ -130,7 +130,13 @@ const rssSources = [
     name: 'Báo Lâm Đồng',
     domain: 'baolamdong.vn',
     icon: 'https://baolamdong.vn/favicon.ico',
-    categories: [{ name: 'Kinh tế', url: 'https://baolamdong.vn/rss/kinh-te' }],
+    categories: [
+      { name: 'Kinh tế', url: 'https://baolamdong.vn/rss/kinh-te' },
+      { name: 'Thời sự', url: 'https://baolamdong.vn/rss/thoi-su' },
+      { name: 'Khởi nghiệp', url: 'https://baolamdong.vn/rss/kinh-te/khoi-nghiep' },
+      { name: 'Đời sống', url: 'https://baolamdong.vn/rss/doi-song' },
+      { name: 'Pháp luật', url: 'https://baolamdong.vn/rss/phap-luat' },
+    ],
   },
 ];
 

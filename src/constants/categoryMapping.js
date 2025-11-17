@@ -15,6 +15,7 @@ const categoryMapping = {
     'Thị trường',
     'Doanh nghiệp',
     'Bất động sản',
+    'Khởi nghiệp',
   ],
 
   'cong-nghe-khoa-hoc': [
