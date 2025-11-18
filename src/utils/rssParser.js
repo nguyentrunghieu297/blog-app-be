@@ -5,7 +5,7 @@ const he = require('he');
 
 const parser = new Parser({
   defaultRSS: 2.0,
-  timeout: 15000, // ✅ Giảm từ 10s xuống 8s
+  timeout: 20000, // ✅ Tăng lên 20s cho server nước ngoài
   customFields: {
     item: [
       ['media:content', 'mediaContent'],
@@ -14,22 +14,29 @@ const parser = new Parser({
       ['content:encoded', 'contentEncoded'],
     ],
   },
+  // ✅ Thêm headers để tránh bị block
+  headers: {
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    Accept: 'application/rss+xml, application/xml, text/xml, */*',
+    'Accept-Language': 'vi-VN,vi;q=0.9,en;q=0.8',
+    'Cache-Control': 'no-cache',
+  },
 });
 
-// ✅ Tăng cache TTL lên 15 phút (RSS không thay đổi liên tục)
+// ✅ Tăng cache TTL lên 30 phút (RSS VN update chậm)
 const cache = new NodeCache({
-  stdTTL: 900, // 15 phút
-  checkperiod: 180,
+  stdTTL: 1800, // 30 phút
+  checkperiod: 300,
   useClones: false,
-  maxKeys: 200, // ✅ Limit số keys trong cache
+  maxKeys: 200,
 });
 
 const pendingRequests = new Map();
 
-// ✅ Thêm cache cho processed results
 const processedCache = new NodeCache({
-  stdTTL: 300, // 5 phút cho processed results
-  checkperiod: 60,
+  stdTTL: 600, // 10 phút
+  checkperiod: 120,
   useClones: false,
 });
 
@@ -37,7 +44,6 @@ function isImageUrl(url) {
   if (!url || typeof url !== 'string') return false;
 
   const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'];
-
   const extensionPattern = new RegExp(`\\.(${imageExtensions.join('|')})($|\\?)`, 'i');
   if (extensionPattern.test(url)) return true;
 
@@ -62,7 +68,6 @@ function extractImage(item) {
 
   const html = item.contentEncoded || item.content || item.description || '';
 
-  // ✅ Chỉ dùng 2 patterns phổ biến nhất
   const imagePatterns = [
     /<img[^>]+src=["']?([^"'>\s]+)["']?/i,
     /<img[^>]+data-src=["']?([^"'>\s]+)["']?/i,
@@ -86,7 +91,7 @@ function cleanDescription(desc) {
     allowedTags: [],
     allowedAttributes: {},
   });
-  return desc.replace(/\s+/g, ' ').trim().substring(0, 300); // ✅ Limit 300 chars
+  return desc.replace(/\s+/g, ' ').trim().substring(0, 300);
 }
 
 function parsePubDate(dateString) {
@@ -96,64 +101,91 @@ function parsePubDate(dateString) {
   return parsed;
 }
 
-const fetchRSS = async (url) => {
+// ✅ Thêm retry logic
+const fetchRSS = async (url, retries = 2) => {
   try {
     const cachedData = cache.get(url);
-    if (cachedData) return cachedData;
+    if (cachedData) {
+      console.log(`✅ Cache hit: ${url}`);
+      return cachedData;
+    }
 
     if (pendingRequests.has(url)) {
       return await pendingRequests.get(url);
     }
 
     const fetchPromise = (async () => {
-      try {
-        const feed = await parser.parseURL(url);
+      let lastError;
 
-        // ✅ Chỉ lấy 30 items mới nhất từ mỗi feed
-        const recentItems = feed.items.slice(0, 30);
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+          console.log(`🔄 Fetching ${url} (attempt ${attempt + 1}/${retries + 1})`);
 
-        const items = recentItems.map((item) => {
-          const rawDesc = item.contentSnippet || item.description || '';
+          const feed = await parser.parseURL(url);
 
-          return {
-            title: he.decode(item.title?.trim() || '').substring(0, 200), // ✅ Limit title
-            description: cleanDescription(he.decode(rawDesc)),
-            link: item.link,
-            pubDate: parsePubDate(item.pubDate),
-            featuredImage: extractImage(item),
-          };
-        });
+          const recentItems = feed.items.slice(0, 30);
 
-        cache.set(url, items);
-        return items;
-      } finally {
-        pendingRequests.delete(url);
+          const items = recentItems.map((item) => {
+            const rawDesc = item.contentSnippet || item.description || '';
+
+            return {
+              title: he.decode(item.title?.trim() || '').substring(0, 200),
+              description: cleanDescription(he.decode(rawDesc)),
+              link: item.link,
+              pubDate: parsePubDate(item.pubDate),
+              featuredImage: extractImage(item),
+            };
+          });
+
+          cache.set(url, items);
+          console.log(`✅ Successfully fetched ${url}: ${items.length} items`);
+          return items;
+        } catch (error) {
+          lastError = error;
+          console.warn(`⚠️ Attempt ${attempt + 1} failed for ${url}: ${error.message}`);
+
+          if (attempt < retries) {
+            // Đợi 1-2 giây trước khi retry
+            await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
+          }
+        }
       }
+
+      throw lastError;
     })();
 
     pendingRequests.set(url, fetchPromise);
-    return await fetchPromise;
+
+    try {
+      return await fetchPromise;
+    } finally {
+      pendingRequests.delete(url);
+    }
   } catch (error) {
     pendingRequests.delete(url);
-    console.warn(`⚠️ Failed to fetch ${url}`);
+    console.error(`❌ Failed to fetch ${url} after ${retries + 1} attempts:`, error.message);
     return [];
   }
 };
 
-// ✅ Tăng concurrency lên 20 và thêm timeout
-const fetchRSSBatch = async (urls, concurrency = 20) => {
+// ✅ Giảm concurrency xuống 5 cho kết nối từ server nước ngoài
+const fetchRSSBatch = async (urls, concurrency = 5) => {
   const results = [];
   const startTime = Date.now();
+
+  console.log(`📊 Starting batch fetch: ${urls.length} URLs, concurrency: ${concurrency}`);
 
   for (let i = 0; i < urls.length; i += concurrency) {
     const batch = urls.slice(i, i + concurrency);
 
-    // ✅ Thêm timeout cho mỗi batch
+    // ✅ Timeout 25s cho mỗi request
     const batchPromise = Promise.allSettled(
       batch.map((url) =>
         Promise.race([
           fetchRSS(url),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 8000)),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Request timeout after 25s')), 25000)
+          ),
         ])
       )
     );
@@ -168,19 +200,27 @@ const fetchRSSBatch = async (urls, concurrency = 20) => {
       }))
     );
 
-    // ✅ Log progress
-    if (i % 20 === 0) {
-      console.log(
-        `📊 Processed ${i + batch.length}/${urls.length} feeds (${Date.now() - startTime}ms)`
-      );
+    const successCount = batchResults.filter((r) => r.status === 'fulfilled').length;
+    console.log(
+      `📊 Batch ${Math.floor(i / concurrency) + 1}: ${successCount}/${batch.length} successful (${
+        Date.now() - startTime
+      }ms)`
+    );
+
+    // ✅ Thêm delay giữa các batch để tránh rate limit
+    if (i + concurrency < urls.length) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
 
-  console.log(`✅ Total fetch time: ${Date.now() - startTime}ms`);
+  const totalSuccess = results.filter((r) => r.data.length > 0).length;
+  console.log(
+    `✅ Total fetch time: ${Date.now() - startTime}ms - Success: ${totalSuccess}/${urls.length}`
+  );
+
   return results;
 };
 
-// ✅ Export cache stats cho monitoring
 const getCacheStats = () => {
   return {
     rss: cache.getStats(),
