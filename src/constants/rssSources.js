@@ -111,33 +111,6 @@ const rssSources = [
       { name: 'Du lịch', url: 'https://nld.com.vn/rss/du-lich.rss' },
     ],
   },
-  {
-    name: 'Báo Đầu Tư',
-    domain: 'baodautu.vn',
-    icon: 'https://baodautu.vn/favicon.ico',
-    categories: [
-      { name: 'Thời sự', url: 'https://baodautu.vn/rss/thoi-su.rss' },
-      { name: 'Tài chính', url: 'https://baodautu.vn/rss/tai-chinh.rss' },
-      { name: 'Bất động sản', url: 'https://baodautu.vn/rss/bat-dong-san.rss' },
-      { name: 'Doanh nghiệp', url: 'https://baodautu.vn/rss/doanh-nghiep.rss' },
-      { name: 'Chứng khoán', url: 'https://baodautu.vn/rss/chung-khoan.rss' },
-      { name: 'Kinh tế số', url: 'https://baodautu.vn/rss/kinh-te-so.rss' },
-      { name: 'Công nghệ', url: 'https://baodautu.vn/rss/vien-thong-cong-nghe.rss' },
-      { name: 'Thế giới', url: 'https://baodautu.vn/rss/kinh-te-the-gioi.rss' },
-    ],
-  },
-  {
-    name: 'Báo Lâm Đồng',
-    domain: 'baolamdong.vn',
-    icon: 'https://baolamdong.vn/favicon.ico',
-    categories: [
-      { name: 'Kinh tế', url: 'https://baolamdong.vn/rss/kinh-te' },
-      { name: 'Thời sự', url: 'https://baolamdong.vn/rss/thoi-su' },
-      { name: 'Khởi nghiệp', url: 'https://baolamdong.vn/rss/kinh-te/khoi-nghiep' },
-      { name: 'Đời sống', url: 'https://baolamdong.vn/rss/doi-song' },
-      { name: 'Pháp luật', url: 'https://baolamdong.vn/rss/phap-luat' },
-    ],
-  },
 ];
 
 module.exports = { rssSources };
