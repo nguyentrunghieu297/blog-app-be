@@ -84,6 +84,13 @@ function extractImage(item) {
   return null;
 }
 
+function decodeText(text) {
+  if (!text) return '';
+  let decoded = he.decode(text);
+  decoded = he.decode(decoded); // decode lần 2
+  return decoded.replace(/&apos;/g, "'"); // fallback
+}
+
 function cleanDescription(desc) {
   if (!desc) return '';
   desc = desc.replace(/]]>/g, '');
@@ -129,7 +136,7 @@ const fetchRSS = async (url, retries = 2) => {
             const rawDesc = item.contentSnippet || item.description || '';
 
             return {
-              title: he.decode(item.title?.trim() || '').substring(0, 200),
+              title: decodeText(item.title?.trim() || '').substring(0, 200),
               description: cleanDescription(he.decode(rawDesc)),
               link: item.link,
               pubDate: parsePubDate(item.pubDate),
