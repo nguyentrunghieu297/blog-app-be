@@ -1,4 +1,7 @@
 const rssSources = [
+  // =======================
+  // VnExpress (Tin nhanh, phân tích, khoa học)
+  // =======================
   {
     name: 'VnExpress',
     domain: 'vnexpress.net',
@@ -6,109 +9,88 @@ const rssSources = [
     categories: [
       { name: 'Thời sự', url: 'https://vnexpress.net/rss/thoi-su.rss' },
       { name: 'Kinh doanh', url: 'https://vnexpress.net/rss/kinh-doanh.rss' },
-      { name: 'Bất động sản', url: 'https://vnexpress.net/rss/bat-dong-san.rss' },
       { name: 'Khoa học', url: 'https://vnexpress.net/rss/khoa-hoc.rss' },
       { name: 'Công nghệ số', url: 'https://vnexpress.net/rss/so-hoa.rss' },
-      { name: 'Thế giới', url: 'https://vnexpress.net/rss/the-gioi.rss' },
-      { name: 'Giải trí', url: 'https://vnexpress.net/rss/giai-tri.rss' },
-      { name: 'Giáo dục', url: 'https://vnexpress.net/rss/giao-duc.rss' },
-      { name: 'Pháp luật', url: 'https://vnexpress.net/rss/phap-luat.rss' },
-      { name: 'Sức khỏe', url: 'https://vnexpress.net/rss/suc-khoe.rss' },
-      { name: 'Đời sống', url: 'https://vnexpress.net/rss/doi-song.rss' },
-      { name: 'Du lịch', url: 'https://vnexpress.net/rss/du-lich.rss' },
-      { name: 'Xe', url: 'https://vnexpress.net/rss/oto-xe-may.rss' },
-      { name: 'Thể thao', url: 'https://vnexpress.net/rss/the-thao.rss' },
+      { name: 'Bất động sản', url: 'https://vnexpress.net/rss/bat-dong-san.rss' },
     ],
   },
+
+  // =======================
+  // Tuổi Trẻ (Giới trẻ, công nghệ, văn hóa)
+  // =======================
   {
     name: 'Tuổi Trẻ',
     domain: 'tuoitre.vn',
     icon: 'https://tuoitre.vn/favicon.ico',
     categories: [
       { name: 'Thời sự', url: 'https://tuoitre.vn/rss/thoi-su.rss' },
-      { name: 'Kinh doanh', url: 'https://tuoitre.vn/rss/kinh-doanh.rss' },
-      { name: 'Thế giới', url: 'https://tuoitre.vn/rss/the-gioi.rss' },
       { name: 'Công nghệ', url: 'https://tuoitre.vn/rss/nhip-song-so.rss' },
-      { name: 'Giáo dục', url: 'https://tuoitre.vn/rss/giao-duc.rss' },
-      { name: 'Pháp luật', url: 'https://tuoitre.vn/rss/phap-luat.rss' },
-      { name: 'Xe', url: 'https://tuoitre.vn/rss/xe.rss' },
-      { name: 'Du lịch', url: 'https://tuoitre.vn/rss/du-lich.rss' },
       { name: 'Nhịp sống trẻ', url: 'https://tuoitre.vn/rss/nhip-song-tre.rss' },
       { name: 'Văn hóa', url: 'https://tuoitre.vn/rss/van-hoa.rss' },
-      { name: 'Giải trí', url: 'https://tuoitre.vn/rss/giai-tri.rss' },
-      { name: 'Thể thao', url: 'https://tuoitre.vn/rss/the-thao.rss' },
+      { name: 'Thế giới', url: 'https://tuoitre.vn/rss/the-gioi.rss' },
     ],
   },
+
+  // =======================
+  // Thanh Niên (Công nghệ sâu, blockchain, game)
+  // =======================
   {
     name: 'Thanh Niên',
     domain: 'thanhnien.vn',
     icon: 'https://thanhnien.vn/favicon.ico',
     categories: [
       { name: 'Thời sự', url: 'https://thanhnien.vn/rss/thoi-su.rss' },
-      { name: 'Kinh tế', url: 'https://thanhnien.vn/rss/kinh-te.rss' },
-      { name: 'Thế giới', url: 'https://thanhnien.vn/rss/the-gioi.rss' },
       { name: 'Công nghệ', url: 'https://thanhnien.vn/rss/cong-nghe.rss' },
       { name: 'Blockchain', url: 'https://thanhnien.vn/rss/cong-nghe/blockchain.rss' },
       { name: 'Game', url: 'https://thanhnien.vn/rss/cong-nghe/game.rss' },
-      { name: 'Giải trí', url: 'https://thanhnien.vn/rss/giai-tri.rss' },
       { name: 'Thể thao', url: 'https://thanhnien.vn/rss/the-thao.rss' },
-      { name: 'Giáo dục', url: 'https://thanhnien.vn/rss/giao-duc.rss' },
-      { name: 'Sức khỏe', url: 'https://thanhnien.vn/rss/suc-khoe.rss' },
-      { name: 'Đời sống', url: 'https://thanhnien.vn/rss/doi-song.rss' },
-      { name: 'Du lịch', url: 'https://thanhnien.vn/rss/du-lich.rss' },
-      { name: 'Xe', url: 'https://thanhnien.vn/rss/xe.rss' },
     ],
   },
+
+  // =======================
+  // Vietnamnet (Đời sống, sức khỏe, công nghệ)
+  // =======================
   {
     name: 'Vietnamnet',
     domain: 'vietnamnet.vn',
     icon: 'https://vietnamnet.vn/favicon.ico',
     categories: [
       { name: 'Thời sự', url: 'https://vietnamnet.vn/rss/thoi-su.rss' },
-      { name: 'Kinh doanh', url: 'https://vietnamnet.vn/rss/kinh-doanh.rss' },
       { name: 'Bất động sản', url: 'https://vietnamnet.vn/rss/bat-dong-san.rss' },
-      { name: 'Thế giới', url: 'https://vietnamnet.vn/rss/the-gioi.rss' },
-      { name: 'Công nghệ', url: 'https://vietnamnet.vn/rss/cong-nghe.rss' },
-      { name: 'Giải trí', url: 'https://vietnamnet.vn/rss/giai-tri.rss' },
-      { name: 'Thể thao', url: 'https://vietnamnet.vn/rss/the-thao.rss' },
-      { name: 'Giáo dục', url: 'https://vietnamnet.vn/rss/giao-duc.rss' },
       { name: 'Sức khỏe', url: 'https://vietnamnet.vn/rss/suc-khoe.rss' },
       { name: 'Đời sống', url: 'https://vietnamnet.vn/rss/doi-song.rss' },
-      { name: 'Du lịch', url: 'https://vietnamnet.vn/rss/du-lich.rss' },
+      { name: 'Công nghệ', url: 'https://vietnamnet.vn/rss/cong-nghe.rss' },
     ],
   },
+
+  // =======================
+  // Dân Trí (Pháp luật, ô tô, văn hóa)
+  // =======================
   {
     name: 'Dân Trí',
     domain: 'dantri.com.vn',
     icon: 'https://dantri.com.vn/favicon.ico',
     categories: [
-      { name: 'Thời sự', url: 'https://dantri.com.vn/rss/xa-hoi.rss' },
-      { name: 'Kinh tế', url: 'https://dantri.com.vn/rss/kinh-doanh.rss' },
-      { name: 'Bất động sản', url: 'https://dantri.com.vn/rss/bat-dong-san.rss' },
-      { name: 'Thế giới', url: 'https://dantri.com.vn/rss/the-gioi.rss' },
-      { name: 'Công nghệ', url: 'https://dantri.com.vn/rss/suc-manh-so.rss' },
-      { name: 'Giải trí', url: 'https://dantri.com.vn/rss/giai-tri.rss' },
-      { name: 'Thể thao', url: 'https://dantri.com.vn/rss/the-thao.rss' },
-      { name: 'Giáo dục', url: 'https://dantri.com.vn/rss/giao-duc.rss' },
-      { name: 'Sức khỏe', url: 'https://dantri.com.vn/rss/suc-khoe.rss' },
-      { name: 'Văn hóa', url: 'https://dantri.com.vn/rss/van-hoa.rss' },
       { name: 'Pháp luật', url: 'https://dantri.com.vn/rss/phap-luat.rss' },
       { name: 'Ô tô - Xe máy', url: 'https://dantri.com.vn/rss/o-to-xe-may.rss' },
+      { name: 'Công nghệ', url: 'https://dantri.com.vn/rss/suc-manh-so.rss' },
+      { name: 'Văn hóa', url: 'https://dantri.com.vn/rss/van-hoa.rss' },
+      { name: 'Thế giới', url: 'https://dantri.com.vn/rss/the-gioi.rss' },
     ],
   },
+
+  // =======================
+  // Người Lao Động (Kinh tế, pháp luật, sức khỏe)
+  // =======================
   {
     name: 'Người Lao Động',
     domain: 'nld.com.vn',
     icon: 'https://nld.com.vn/favicon.ico',
     categories: [
-      { name: 'Thời sự', url: 'https://nld.com.vn/rss/thoi-su.rss' },
       { name: 'Kinh tế', url: 'https://nld.com.vn/rss/kinh-te.rss' },
-      { name: 'Giải trí', url: 'https://nld.com.vn/rss/giai-tri.rss' },
-      { name: 'Thể thao', url: 'https://nld.com.vn/rss/the-thao.rss' },
       { name: 'Pháp luật', url: 'https://nld.com.vn/rss/phap-luat.rss' },
+      { name: 'Giải trí', url: 'https://nld.com.vn/rss/giai-tri.rss' },
       { name: 'Sức khỏe', url: 'https://nld.com.vn/rss/suc-khoe.rss' },
-      { name: 'Đời sống', url: 'https://nld.com.vn/rss/doi-song.rss' },
-      { name: 'Du lịch', url: 'https://nld.com.vn/rss/du-lich.rss' },
     ],
   },
 ];
