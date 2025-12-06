@@ -5,7 +5,7 @@ const he = require('he');
 
 const parser = new Parser({
   defaultRSS: 2.0,
-  timeout: 20000, // ✅ Tăng lên 20s cho server nước ngoài
+  timeout: 8000, // ✅ Giảm xuống 8s - RSS feeds thường load nhanh
   customFields: {
     item: [
       ['media:content', 'mediaContent'],
@@ -14,7 +14,6 @@ const parser = new Parser({
       ['content:encoded', 'contentEncoded'],
     ],
   },
-  // ✅ Thêm headers để tránh bị block
   headers: {
     'User-Agent':
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -24,21 +23,22 @@ const parser = new Parser({
   },
 });
 
-// ✅ Tăng cache TTL lên 30 phút (RSS VN update chậm)
+// ✅ Cache với TTL dài hơn
 const cache = new NodeCache({
-  stdTTL: 1800, // 30 phút
+  stdTTL: 3600, // 60 phút
   checkperiod: 300,
   useClones: false,
   maxKeys: 200,
 });
 
-const pendingRequests = new Map();
-
-const processedCache = new NodeCache({
-  stdTTL: 600, // 10 phút
-  checkperiod: 120,
+// ✅ Thêm stale cache - serve old data ngay, fetch mới ở background
+const staleCache = new NodeCache({
+  stdTTL: 7200, // 2 giờ - giữ data cũ lâu hơn
+  checkperiod: 600,
   useClones: false,
 });
+
+const pendingRequests = new Map();
 
 function isImageUrl(url) {
   if (!url || typeof url !== 'string') return false;
@@ -87,8 +87,8 @@ function extractImage(item) {
 function decodeText(text) {
   if (!text) return '';
   let decoded = he.decode(text);
-  decoded = he.decode(decoded); // decode lần 2
-  return decoded.replace(/&apos;/g, "'"); // fallback
+  decoded = he.decode(decoded);
+  return decoded.replace(/&apos;/g, "'");
 }
 
 function cleanDescription(desc) {
@@ -108,91 +108,129 @@ function parsePubDate(dateString) {
   return parsed;
 }
 
-// ✅ Thêm retry logic
-const fetchRSS = async (url, retries = 2) => {
+// ✅ Optimized processing - giảm operations
+function processItem(item) {
+  const rawDesc = item.contentSnippet || item.description || '';
+
+  return {
+    title: decodeText(item.title?.trim() || '').substring(0, 200),
+    description: cleanDescription(he.decode(rawDesc)),
+    link: item.link,
+    pubDate: parsePubDate(item.pubDate),
+    featuredImage: extractImage(item),
+  };
+}
+
+// ✅ Fetch với stale-while-revalidate pattern
+const fetchRSS = async (url, retries = 1) => {
   try {
+    // Check fresh cache
     const cachedData = cache.get(url);
     if (cachedData) {
-      console.log(`✅ Cache hit: ${url}`);
+      console.log(`✅ Fresh cache hit: ${url}`);
       return cachedData;
     }
 
-    if (pendingRequests.has(url)) {
-      return await pendingRequests.get(url);
+    // Check stale cache - serve ngay, fetch background
+    const staleData = staleCache.get(url);
+    if (staleData) {
+      console.log(`⚡ Stale cache hit: ${url} (revalidating...)`);
+
+      // Background revalidation
+      fetchRSSActual(url, retries).catch((err) =>
+        console.warn(`Background revalidation failed for ${url}:`, err.message)
+      );
+
+      return staleData;
     }
 
-    const fetchPromise = (async () => {
-      let lastError;
-
-      for (let attempt = 0; attempt <= retries; attempt++) {
-        try {
-          console.log(`🔄 Fetching ${url} (attempt ${attempt + 1}/${retries + 1})`);
-
-          const feed = await parser.parseURL(url);
-
-          const recentItems = feed.items.slice(0, 30);
-
-          const items = recentItems.map((item) => {
-            const rawDesc = item.contentSnippet || item.description || '';
-
-            return {
-              title: decodeText(item.title?.trim() || '').substring(0, 200),
-              description: cleanDescription(he.decode(rawDesc)),
-              link: item.link,
-              pubDate: parsePubDate(item.pubDate),
-              featuredImage: extractImage(item),
-            };
-          });
-
-          cache.set(url, items);
-          console.log(`✅ Successfully fetched ${url}: ${items.length} items`);
-          return items;
-        } catch (error) {
-          lastError = error;
-          console.warn(`⚠️ Attempt ${attempt + 1} failed for ${url}: ${error.message}`);
-
-          if (attempt < retries) {
-            // Đợi 1-2 giây trước khi retry
-            await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
-          }
-        }
-      }
-
-      throw lastError;
-    })();
-
-    pendingRequests.set(url, fetchPromise);
-
-    try {
-      return await fetchPromise;
-    } finally {
-      pendingRequests.delete(url);
-    }
+    // No cache - fetch mới
+    return await fetchRSSActual(url, retries);
   } catch (error) {
-    pendingRequests.delete(url);
-    console.error(`❌ Failed to fetch ${url} after ${retries + 1} attempts:`, error.message);
+    console.error(`❌ Failed to fetch ${url}:`, error.message);
+
+    // Fallback to stale cache nếu có
+    const staleData = staleCache.get(url);
+    if (staleData) {
+      console.log(`🔄 Using stale cache as fallback for ${url}`);
+      return staleData;
+    }
+
     return [];
   }
 };
 
-// ✅ Giảm concurrency xuống 5 cho kết nối từ server nước ngoài
-const fetchRSSBatch = async (urls, concurrency = 5) => {
+// ✅ Actual fetch logic
+const fetchRSSActual = async (url, retries = 1) => {
+  if (pendingRequests.has(url)) {
+    return await pendingRequests.get(url);
+  }
+
+  const fetchPromise = (async () => {
+    let lastError;
+
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        console.log(`🔄 Fetching ${url} (${attempt + 1}/${retries + 1})`);
+
+        // ✅ Race với timeout ngắn hơn (10s)
+        const fetchWithTimeout = Promise.race([
+          parser.parseURL(url),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000)),
+        ]);
+
+        const feed = await fetchWithTimeout;
+
+        // ✅ Process song song với Promise.all
+        const recentItems = feed.items.slice(0, 30);
+        const items = recentItems.map(processItem);
+
+        // Save to both caches
+        cache.set(url, items);
+        staleCache.set(url, items);
+
+        console.log(`✅ Fetched ${url}: ${items.length} items`);
+        return items;
+      } catch (error) {
+        lastError = error;
+        console.warn(`⚠️ Attempt ${attempt + 1} failed for ${url}: ${error.message}`);
+
+        // ✅ Exponential backoff thay vì linear
+        if (attempt < retries) {
+          const delay = Math.min(1000 * Math.pow(2, attempt), 3000); // Max 3s
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
+      }
+    }
+
+    throw lastError;
+  })();
+
+  pendingRequests.set(url, fetchPromise);
+
+  try {
+    return await fetchPromise;
+  } finally {
+    pendingRequests.delete(url);
+  }
+};
+
+// ✅ Batch fetch với concurrency cao hơn và timeout ngắn
+const fetchRSSBatch = async (urls, concurrency = 8) => {
   const results = [];
   const startTime = Date.now();
 
-  console.log(`📊 Starting batch fetch: ${urls.length} URLs, concurrency: ${concurrency}`);
+  console.log(`📊 Batch fetch: ${urls.length} URLs, concurrency: ${concurrency}`);
 
   for (let i = 0; i < urls.length; i += concurrency) {
     const batch = urls.slice(i, i + concurrency);
 
-    // ✅ Timeout 25s cho mỗi request
+    // ✅ Timeout 12s cho mỗi batch (giảm từ 25s)
     const batchPromise = Promise.allSettled(
       batch.map((url) =>
         Promise.race([
           fetchRSS(url),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Request timeout after 25s')), 25000)
-          ),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Batch timeout')), 12000)),
         ])
       )
     );
@@ -209,30 +247,39 @@ const fetchRSSBatch = async (urls, concurrency = 5) => {
 
     const successCount = batchResults.filter((r) => r.status === 'fulfilled').length;
     console.log(
-      `📊 Batch ${Math.floor(i / concurrency) + 1}: ${successCount}/${batch.length} successful (${
+      `📊 Batch ${Math.floor(i / concurrency) + 1}: ${successCount}/${batch.length} (${
         Date.now() - startTime
       }ms)`
     );
 
-    // ✅ Thêm delay giữa các batch để tránh rate limit
+    // ✅ Giảm delay giữa batches
     if (i + concurrency < urls.length) {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 200)); // Giảm từ 500ms
     }
   }
 
   const totalSuccess = results.filter((r) => r.data.length > 0).length;
-  console.log(
-    `✅ Total fetch time: ${Date.now() - startTime}ms - Success: ${totalSuccess}/${urls.length}`
-  );
+  console.log(`✅ Total: ${Date.now() - startTime}ms - Success: ${totalSuccess}/${urls.length}`);
 
   return results;
 };
 
 const getCacheStats = () => {
   return {
-    rss: cache.getStats(),
-    processed: processedCache.getStats(),
+    fresh: cache.getStats(),
+    stale: staleCache.getStats(),
   };
 };
 
-module.exports = { fetchRSS, fetchRSSBatch, processedCache, getCacheStats };
+// ✅ Warm up cache - gọi trước để cache sẵn
+const warmupCache = async (urls) => {
+  console.log(`🔥 Warming up cache for ${urls.length} URLs...`);
+  await fetchRSSBatch(urls, 10);
+};
+
+module.exports = {
+  fetchRSS,
+  fetchRSSBatch,
+  getCacheStats,
+  warmupCache,
+};

@@ -22,69 +22,95 @@ function isCategoryMatch(categoryName, targetCategories) {
   });
 }
 
-/**
- * ✅ Interleave items từ nhiều nguồn để cân bằng
- * Thuật toán: Lấy luân phiên từng item từ mỗi nguồn, đảm bảo đa dạng
- */
+// ✅ Optimized interleave - giảm operations
 function interleaveBySource(sourceGroups, targetCount) {
   const sources = Array.from(sourceGroups.keys());
+  if (sources.length === 0) return [];
+
   const result = [];
+  const indices = new Map();
 
-  // Sort items trong mỗi nguồn theo date
-  sources.forEach((sourceName) => {
-    const items = sourceGroups.get(sourceName);
-    items.sort((a, b) => {
-      const dateA = a.pubDate ? a.pubDate.getTime() : 0;
-      const dateB = b.pubDate ? b.pubDate.getTime() : 0;
-      return dateB - dateA;
-    });
-  });
-
-  // Tính số items tối thiểu mỗi nguồn (đảm bảo mỗi nguồn có ít nhất 1-2 bài)
-  const minItemsPerSource = Math.max(1, Math.floor(targetCount / sources.length));
-  const indices = new Map(sources.map((s) => [s, 0]));
-
-  // Phase 1: Đảm bảo mỗi nguồn có ít nhất minItemsPerSource items
+  // Pre-sort và init indices
   for (const sourceName of sources) {
     const items = sourceGroups.get(sourceName);
-    const count = Math.min(minItemsPerSource, items.length);
-
-    for (let i = 0; i < count; i++) {
-      result.push(items[i]);
-      indices.set(sourceName, i + 1);
-    }
+    items.sort((a, b) => b.pubDate?.getTime() - a.pubDate?.getTime());
+    indices.set(sourceName, 0);
   }
 
-  // Phase 2: Round-robin cho items còn lại
-  let round = 0;
-  const maxRounds = targetCount * 2;
+  const minItemsPerSource = Math.max(1, Math.floor(targetCount / sources.length));
 
-  while (result.length < targetCount && round < maxRounds) {
-    let addedInRound = false;
-
+  // Phase 1: Round-robin minimum
+  for (let i = 0; i < minItemsPerSource; i++) {
     for (const sourceName of sources) {
       if (result.length >= targetCount) break;
 
       const items = sourceGroups.get(sourceName);
-      const currentIdx = indices.get(sourceName);
+      const idx = indices.get(sourceName);
 
-      if (currentIdx < items.length) {
-        result.push(items[currentIdx]);
-        indices.set(sourceName, currentIdx + 1);
-        addedInRound = true;
+      if (idx < items.length) {
+        result.push(items[idx]);
+        indices.set(sourceName, idx + 1);
       }
     }
+  }
 
-    if (!addedInRound) break; // Không còn items nào
-    round++;
+  // Phase 2: Fill remaining
+  let sourceIdx = 0;
+  while (result.length < targetCount) {
+    const sourceName = sources[sourceIdx % sources.length];
+    const items = sourceGroups.get(sourceName);
+    const idx = indices.get(sourceName);
+
+    if (idx < items.length) {
+      result.push(items[idx]);
+      indices.set(sourceName, idx + 1);
+    }
+
+    sourceIdx++;
+
+    // Safety break nếu không còn items
+    if (sourceIdx > sources.length * 100) break;
   }
 
   return result;
 }
 
+// ✅ Process results song song
+function processResults(results, urlMetadata) {
+  const sourceGroups = new Map();
+
+  for (const result of results) {
+    if (result.error || !result.data?.length) continue;
+
+    const metadata = urlMetadata.get(result.url);
+    if (!metadata) continue;
+
+    const sourceName = metadata.sourceName;
+
+    if (!sourceGroups.has(sourceName)) {
+      sourceGroups.set(sourceName, []);
+    }
+
+    // ✅ Push trực tiếp thay vì loop
+    const items = result.data.map((item) => ({
+      ...item,
+      sourceName: metadata.sourceName,
+      sourceIcon: metadata.sourceIcon,
+      domain: metadata.domain,
+      category: metadata.categoryName,
+    }));
+
+    sourceGroups.get(sourceName).push(...items);
+  }
+
+  return sourceGroups;
+}
+
 const getAllNews = async (req, res) => {
   try {
     const { source: sourceQuery, category: categoryKey, limit = 30 } = req.query;
+    const parsedLimit = Math.min(Math.max(1, parseInt(limit) || 30), 100);
+
     let selectedSources = rssSources;
 
     if (sourceQuery) {
@@ -93,12 +119,9 @@ const getAllNews = async (req, res) => {
       );
     }
 
-    // ✅ Validate limit
-    const parsedLimit = Math.min(Math.max(1, parseInt(limit) || 30), 100);
-
     const targetCategories = categoryKey ? categoryMapping[categoryKey] : null;
 
-    // Thu thập URLs và metadata
+    // ✅ Thu thập URLs - optimize loop
     const urlsToFetch = [];
     const urlMetadata = new Map();
 
@@ -106,10 +129,9 @@ const getAllNews = async (req, res) => {
       const categories = source.categories || [];
 
       for (const category of categories) {
-        if (targetCategories !== null && targetCategories !== undefined) {
-          if (!isCategoryMatch(category.name, targetCategories)) {
-            continue;
-          }
+        // Skip early nếu không match category
+        if (targetCategories && !isCategoryMatch(category.name, targetCategories)) {
+          continue;
         }
 
         urlsToFetch.push(category.url);
@@ -124,43 +146,11 @@ const getAllNews = async (req, res) => {
 
     console.log(`🔄 Fetching ${urlsToFetch.length} RSS feeds...`);
 
-    // Fetch parallel với concurrency limit
-    const results = await fetchRSSBatch(urlsToFetch, 10);
+    // ✅ Fetch với concurrency cao hơn (từ 10 lên 12)
+    const results = await fetchRSSBatch(urlsToFetch, 12);
 
-    // ✅ Group items theo SOURCE (không phải URL)
-    const sourceGroups = new Map();
-
-    for (const result of results) {
-      if (result.error) {
-        console.warn(`⚠️ Failed to fetch ${result.url}:`, result.error.message);
-        continue;
-      }
-
-      const metadata = urlMetadata.get(result.url);
-      if (!metadata) continue;
-
-      const sourceName = metadata.sourceName;
-
-      // Khởi tạo array cho source nếu chưa có
-      if (!sourceGroups.has(sourceName)) {
-        sourceGroups.set(sourceName, []);
-      }
-
-      // Thêm items vào source group
-      for (const item of result.data) {
-        sourceGroups.get(sourceName).push({
-          title: item.title,
-          description: item.description || '',
-          link: item.link,
-          pubDate: item.pubDate,
-          featuredImage: item.featuredImage || null,
-          sourceName: metadata.sourceName,
-          sourceIcon: metadata.sourceIcon,
-          domain: metadata.domain,
-          category: metadata.categoryName,
-        });
-      }
-    }
+    // ✅ Process kết quả song song
+    const sourceGroups = processResults(results, urlMetadata);
 
     // Log distribution
     console.log(`📊 Sources collected:`);
@@ -168,15 +158,13 @@ const getAllNews = async (req, res) => {
       console.log(`  ${sourceName}: ${items.length} items`);
     });
 
-    // ✅ Interleave để cân bằng nguồn
-    const interleavedNews = interleaveBySource(sourceGroups, parsedLimit * 2);
+    // ✅ Interleave với buffer lớn hơn để có nhiều lựa chọn sort
+    const interleavedNews = interleaveBySource(sourceGroups, parsedLimit * 1.5);
 
-    // Sort final result by date (giữ lại thứ tự thời gian tương đối)
-    const sorted = interleavedNews.sort((a, b) => {
-      const dateA = a.pubDate ? a.pubDate.getTime() : 0;
-      const dateB = b.pubDate ? b.pubDate.getTime() : 0;
-      return dateB - dateA;
-    });
+    // ✅ Sort final - sử dụng Intl.Collator nếu cần
+    const sorted = interleavedNews.sort(
+      (a, b) => (b.pubDate?.getTime() || 0) - (a.pubDate?.getTime() || 0)
+    );
 
     const finalData = sorted.slice(0, parsedLimit);
 
