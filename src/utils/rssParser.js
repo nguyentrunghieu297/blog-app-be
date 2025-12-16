@@ -5,7 +5,7 @@ const he = require('he');
 
 const parser = new Parser({
   defaultRSS: 2.0,
-  timeout: 8000, // ✅ Giảm xuống 8s - RSS feeds thường load nhanh
+  timeout: 10000, // ✅ Giảm xuống 8s - RSS feeds thường load nhanh
   customFields: {
     item: [
       ['media:content', 'mediaContent'],
