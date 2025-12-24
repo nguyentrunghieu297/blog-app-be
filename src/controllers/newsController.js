@@ -22,7 +22,6 @@ function isCategoryMatch(categoryName, targetCategories) {
   });
 }
 
-// ✅ Optimized interleave - giảm operations
 function interleaveBySource(sourceGroups, targetCount) {
   const sources = Array.from(sourceGroups.keys());
   if (sources.length === 0) return [];
@@ -30,7 +29,6 @@ function interleaveBySource(sourceGroups, targetCount) {
   const result = [];
   const indices = new Map();
 
-  // Pre-sort và init indices
   for (const sourceName of sources) {
     const items = sourceGroups.get(sourceName);
     items.sort((a, b) => b.pubDate?.getTime() - a.pubDate?.getTime());
@@ -39,7 +37,6 @@ function interleaveBySource(sourceGroups, targetCount) {
 
   const minItemsPerSource = Math.max(1, Math.floor(targetCount / sources.length));
 
-  // Phase 1: Round-robin minimum
   for (let i = 0; i < minItemsPerSource; i++) {
     for (const sourceName of sources) {
       if (result.length >= targetCount) break;
@@ -54,7 +51,6 @@ function interleaveBySource(sourceGroups, targetCount) {
     }
   }
 
-  // Phase 2: Fill remaining
   let sourceIdx = 0;
   while (result.length < targetCount) {
     const sourceName = sources[sourceIdx % sources.length];
@@ -67,15 +63,12 @@ function interleaveBySource(sourceGroups, targetCount) {
     }
 
     sourceIdx++;
-
-    // Safety break nếu không còn items
     if (sourceIdx > sources.length * 100) break;
   }
 
   return result;
 }
 
-// ✅ Process results song song
 function processResults(results, urlMetadata) {
   const sourceGroups = new Map();
 
@@ -91,7 +84,6 @@ function processResults(results, urlMetadata) {
       sourceGroups.set(sourceName, []);
     }
 
-    // ✅ Push trực tiếp thay vì loop
     const items = result.data.map((item) => ({
       ...item,
       sourceName: metadata.sourceName,
@@ -121,19 +113,30 @@ const getAllNews = async (req, res) => {
 
     const targetCategories = categoryKey ? categoryMapping[categoryKey] : null;
 
-    // ✅ Thu thập URLs - optimize loop
+    // 🚀 OPTIMIZATION 1: Pre-filter sources nếu user chỉ request 1 category
+    // → Giảm số feeds phải fetch
+    if (categoryKey && categoryKey !== 'tong-quan') {
+      selectedSources = selectedSources
+        .map((source) => ({
+          ...source,
+          categories: source.categories.filter((cat) =>
+            isCategoryMatch(cat.name, targetCategories)
+          ),
+        }))
+        .filter((source) => source.categories.length > 0);
+
+      console.log(
+        `🎯 Category filter: ${categoryKey} → ${
+          selectedSources.length
+        } sources, ${selectedSources.reduce((sum, s) => sum + s.categories.length, 0)} feeds`
+      );
+    }
+
     const urlsToFetch = [];
     const urlMetadata = new Map();
 
     for (const source of selectedSources) {
-      const categories = source.categories || [];
-
-      for (const category of categories) {
-        // Skip early nếu không match category
-        if (targetCategories && !isCategoryMatch(category.name, targetCategories)) {
-          continue;
-        }
-
+      for (const category of source.categories) {
         urlsToFetch.push(category.url);
         urlMetadata.set(category.url, {
           sourceName: source.name,
@@ -146,29 +149,27 @@ const getAllNews = async (req, res) => {
 
     console.log(`🔄 Fetching ${urlsToFetch.length} RSS feeds...`);
 
-    // ✅ Fetch với concurrency cao hơn (từ 10 lên 12)
-    const results = await fetchRSSBatch(urlsToFetch, 12);
+    // 🚀 OPTIMIZATION 2: Tăng concurrency lên 15 (từ 12)
+    // Với 18 feeds → chỉ cần 2 batches thay vì 3
+    const results = await fetchRSSBatch(urlsToFetch, 15);
 
-    // ✅ Process kết quả song song
     const sourceGroups = processResults(results, urlMetadata);
 
-    // Log distribution
     console.log(`📊 Sources collected:`);
     sourceGroups.forEach((items, sourceName) => {
       console.log(`  ${sourceName}: ${items.length} items`);
     });
 
-    // ✅ Interleave với buffer lớn hơn để có nhiều lựa chọn sort
-    const interleavedNews = interleaveBySource(sourceGroups, parsedLimit * 1.5);
+    // 🚀 OPTIMIZATION 3: Giảm buffer từ 1.5x xuống 1.2x
+    // → Sort ít items hơn
+    const interleavedNews = interleaveBySource(sourceGroups, Math.ceil(parsedLimit * 1.2));
 
-    // ✅ Sort final - sử dụng Intl.Collator nếu cần
     const sorted = interleavedNews.sort(
       (a, b) => (b.pubDate?.getTime() || 0) - (a.pubDate?.getTime() || 0)
     );
 
     const finalData = sorted.slice(0, parsedLimit);
 
-    // Log final distribution
     const finalSourceCount = {};
     finalData.forEach((item) => {
       finalSourceCount[item.sourceName] = (finalSourceCount[item.sourceName] || 0) + 1;
